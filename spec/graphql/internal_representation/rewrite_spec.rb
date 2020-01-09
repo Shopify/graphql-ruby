@@ -120,16 +120,17 @@ describe GraphQL::InternalRepresentation::Rewrite do
 
       fruit_selections = plant_selection.typed_children[schema.types["Fruit"]]
       assert_equal ["__typename", "color", "habitats", "leafType", "name"], fruit_selections.keys.sort
-      assert_equal 2, fruit_selections["leafType"].ast_nodes.size
+      assert_equal 5, fruit_selections.size
 
       nut_selections = plant_selection.typed_children[schema.types["Nut"]]
+      assert_equal ["__typename", "habitats", "leafType"], nut_selections.keys.sort
       # `... on Tree`, `... on Nut`, and `NutFields`, but not `... on Fruit { ... on Tree }`
 
-      assert_equal 3, nut_selections["leafType"].ast_nodes.size
+      assert_equal 3, nut_selections.size
 
       # Multi-level merging when including fragments:
       habitats_selections = nut_selections["habitats"].typed_children[schema.types["Habitat"]]
-      assert_equal ["averageWeight", "seasons"], habitats_selections.keys
+      assert_equal ["averageWeight", "seasons"], habitats_selections.keys.sort
     end
 
     it "tracks parent nodes" do
