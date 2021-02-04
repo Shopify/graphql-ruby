@@ -19,7 +19,7 @@
           </a>
           <a href="/getting_started">Get Started</a>
           <a href="/guides">Guides</a>
-          <a href="/api-doc/1.11.4/">API</a>
+          <a href="/api-doc/1.12.3/">API</a>
           <a href="https://tinyletter.com/graphql-ruby">Newsletter</a>
           <a href="https://github.com/rmosolgo/graphql-ruby">Source Code</a>
           <a href="https://graphql.pro">Upgrade to Pro</a>
@@ -160,6 +160,13 @@ appendonly <span class="nb">yes</span>
 
 <p>That connection will be used for managing subscription state. All writes to Redis are prefixed with <code class="language-plaintext highlighter-rouge">graphql:sub:</code>.</p>
 
+<p>There are also two configurations for managing persistence:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">stale_ttl_s:</code> expires subscription data after the given number of seconds without any update. After <code class="language-plaintext highlighter-rouge">stale_ttl_s</code> has passed, the data will expire from Redis. Each time a subscription receives an update, its TTL is refreshed. (Generally, this isn’t required because the backend is built to clean itself up. But, if you find that Redis is collecting stale queries, you can set them to expire after some very long time as a safeguard.)</li>
+  <li><code class="language-plaintext highlighter-rouge">cleanup_delay_s:</code> prevents deleting a subscription during those first seconds after it’s created. Usually, this isn’t necessary, but if you observe latency between the subscription’s initial response and the client’s subscription to the delivery channel, you can set this configuration to account for it.</li>
+</ul>
+
 <h2 id="execution-configuration">Execution configuration</h2>
 
 <p>During execution, GraphQL will assign a <code class="language-plaintext highlighter-rouge">subscription_id</code> to the <code class="language-plaintext highlighter-rouge">context</code> hash. The client will use that ID to listen for updates, so you must return the <code class="language-plaintext highlighter-rouge">subscription_id</code> in the response headers.</p>
@@ -186,6 +193,26 @@ appendonly <span class="nb">yes</span>
 </code></pre></div></div>
 
 <p>Read more here: <a href="https://www.html5rocks.com/en/tutorials/cors/">“Using CORS”</a>.</p>
+
+<h4 id="payload-compression">Payload Compression</h4>
+
+<p>To mitigate problems with <a href="https://support.pusher.com/hc/en-us/articles/360019115473-What-is-the-message-size-limit-when-publishing-a-message-in-Channels-">Pusher’s 10kb message limit</a>, you can specify <code class="language-plaintext highlighter-rouge">compress_pusher_payload: true</code> in the <code class="language-plaintext highlighter-rouge">context</code> of your subscription. For example:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># app/controllers/graphql_controller.rb</span>
+<span class="k">def</span> <span class="nf">execute</span>
+  <span class="c1"># ...</span>
+  <span class="c1"># Somehow detect whether the client supports compressed payloads,</span>
+  <span class="c1"># for example, User-Agent, query param, or request header:</span>
+  <span class="k">if</span> <span class="n">client_supports_compressed_payloads?</span>
+    <span class="n">context</span><span class="p">[</span><span class="ss">:compress_pusher_payload</span><span class="p">]</span> <span class="o">=</span> <span class="kp">true</span>
+  <span class="k">end</span>
+  <span class="c1"># ...</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>This will cause subscription payloads to include <code class="language-plaintext highlighter-rouge">compressed_result: "..."</code> instead of <code class="language-plaintext highlighter-rouge">result: "..."</code> when they’re sent over Pusher. See docs for <a href="/javascript_client/apollo_subscriptions">Apollo Client</a> or <a href="/javascript_client/relay_subscriptions">Relay Modern</a> to read about preparing clients for compressed payloads.</p>
+
+<p>By configuring <code class="language-plaintext highlighter-rouge">compress_pusher_payload: true</code> on a query-by-query basis, the subscription backend can continue to support clients running <em>old</em> client code (by not compressing) while upgrading new clients to compressed payloads.</p>
 
 <h2 id="webhook-configuration">Webhook configuration</h2>
 
@@ -245,7 +272,7 @@ appendonly <span class="nb">yes</span>
 
 <p>Since subscription state is stored in the database, then reloaded for pushing updates, you have to serialize and reload your query <code class="language-plaintext highlighter-rouge">context</code>.</p>
 
-<p>By default, this is done with <a href="/api-doc/1.11.4/GraphQL/Subscriptions/Serialize" target="_blank" title="API docs for GraphQL::Subscriptions::Serialize"><code>GraphQL::Subscriptions::Serialize</code></a>’s <code class="language-plaintext highlighter-rouge">dump</code> and <code class="language-plaintext highlighter-rouge">load</code> methods, but you can provide custom implementations as well. To customize the serialization logic, create a subclass of <code class="language-plaintext highlighter-rouge">GraphQL::Pro::PusherSubscriptions</code> and override <code class="language-plaintext highlighter-rouge">#dump_context(ctx)</code> and <code class="language-plaintext highlighter-rouge">#load_context(ctx_string)</code>:</p>
+<p>By default, this is done with <a href="/api-doc/1.12.3/GraphQL/Subscriptions/Serialize" target="_blank" title="API docs for GraphQL::Subscriptions::Serialize"><code>GraphQL::Subscriptions::Serialize</code></a>’s <code class="language-plaintext highlighter-rouge">dump</code> and <code class="language-plaintext highlighter-rouge">load</code> methods, but you can provide custom implementations as well. To customize the serialization logic, create a subclass of <code class="language-plaintext highlighter-rouge">GraphQL::Pro::PusherSubscriptions</code> and override <code class="language-plaintext highlighter-rouge">#dump_context(ctx)</code> and <code class="language-plaintext highlighter-rouge">#load_context(ctx_string)</code>:</p>
 
 <div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">CustomSubscriptions</span> <span class="o">&lt;</span> <span class="no">GraphQL</span><span class="o">::</span><span class="no">Pro</span><span class="o">::</span><span class="no">PusherSubscriptions</span>
   <span class="k">def</span> <span class="nf">dump_context</span><span class="p">(</span><span class="n">ctx</span><span class="p">)</span>
