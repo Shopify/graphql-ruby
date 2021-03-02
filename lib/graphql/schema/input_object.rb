@@ -132,6 +132,7 @@ module GraphQL
           # Add a method access
           method_name = argument_defn.keyword
           class_eval <<-RUBY, __FILE__, __LINE__
+            # frozen_string_literal: true
             def #{method_name}
               self[#{method_name.inspect}]
             end
