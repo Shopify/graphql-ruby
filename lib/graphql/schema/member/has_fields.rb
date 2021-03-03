@@ -5,6 +5,22 @@ module GraphQL
     class Member
       # Shared code for Object and Interface
       module HasFields
+        def included(base)
+          super if defined? super
+
+          if base.is_a?(Class)
+            mod = self
+            base.singleton_class.define_method(:included) do |base|
+              super(base) if defined? super
+              mod.included(base)
+            end
+          else
+            base.class_methods.include(class_methods)
+          end
+
+          base.extend(class_methods)
+        end
+
         # Add a field to this object or interface with the given definition
         # @see {GraphQL::Schema::Field#initialize} for method signature
         # @return [GraphQL::Schema::Field]
@@ -16,27 +32,15 @@ module GraphQL
 
         # @return [Hash<String => GraphQL::Schema::Field>] Fields on this object, keyed by name, including inherited fields
         def fields
-          # Local overrides take precedence over inherited fields
-          all_fields = {}
-          ancestors.reverse_each do |ancestor|
-            if ancestor.respond_to?(:own_fields)
-              all_fields.merge!(ancestor.own_fields)
-            end
+          if defined? super
+            super
+          else
+            {}
           end
-          all_fields
         end
 
         def get_field(field_name)
-          if (f = own_fields[field_name])
-            f
-          else
-            for ancestor in ancestors
-              if ancestor.respond_to?(:own_fields) && f = ancestor.own_fields[field_name]
-                return f
-              end
-            end
-            nil
-          end
+          own_fields[field_name] || fields[field_name]
         end
 
         # A list of Ruby keywords.
@@ -65,6 +69,7 @@ module GraphQL
             warn(conflict_field_name_warning(field_defn))
           end
           own_fields[field_defn.name] = field_defn
+          define_fields_method
           nil
         end
 
@@ -92,7 +97,29 @@ module GraphQL
           @own_fields ||= {}
         end
 
+        protected
+
+        def class_methods
+          @class_methods ||= const_set(:FieldMethods, Module.new)
+        end
+
         private
+
+        def define_fields_method
+          return if class_methods.method_defined?(:fields, false)
+          snapshot = own_fields
+
+          class_methods.define_method(:fields) do
+            all_fields = {}
+            if defined? super
+              all_fields.merge!(super())
+            end
+            all_fields.merge!(snapshot)
+            all_fields
+          end
+
+          extend(class_methods)
+        end
 
         # @param [GraphQL::Schema::Field]
         # @return [String] A warning to give when this field definition might conflict with a built-in method
