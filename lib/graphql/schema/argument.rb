@@ -247,6 +247,9 @@ module GraphQL
         elsif values.key?(arg_key)
           value = values[arg_key]
         elsif default_value?
+          context.schema.error_handler.with_error_handling(context) do
+            validate_default_value
+          end
           value = default_value
           default_used = true
         else
@@ -296,6 +299,16 @@ module GraphQL
       end
 
       private
+
+      def validate_default_value
+        return if @default_validated
+
+        coerced_value = default_value.nil? ? nil : type.coerce_isolated_result(default_value)
+        validation = type.validate_isolated_input(coerced_value)
+        raise GraphQL::RuntimeTypeError, validation.problems.first["explanation"] unless validation.valid?
+
+        @default_validated = true
+      end
 
       def validate_input_type(input_type)
         if input_type.is_a?(String) || input_type.is_a?(GraphQL::Schema::LateBoundType)

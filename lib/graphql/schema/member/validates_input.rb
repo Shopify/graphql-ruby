@@ -20,6 +20,10 @@ module GraphQL
           valid_input?(v, GraphQL::Query::NullContext)
         end
 
+        def validate_isolated_input(v)
+          validate_input(v, GraphQL::Query::NullContext)
+        end
+
         def coerce_isolated_input(v)
           coerce_input(v, GraphQL::Query::NullContext)
         end
