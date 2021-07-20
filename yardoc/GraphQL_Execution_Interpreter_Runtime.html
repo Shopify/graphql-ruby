@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <html lang="en">
   <head>
-    <meta http-equiv="refresh" content="1;url=/api-doc/1.12.9/GraphQL/Execution/Interpreter/Runtime" />
+    <meta http-equiv="refresh" content="1;url=/api-doc/1.12.13/GraphQL/Execution/Interpreter/Runtime" />
   </head>
   <body>
     <p>Class: GraphQL::Execution::Interpreter::Runtime &lt; Object
@@ -9,16 +9,14 @@ This class is part of a private API.
 I think it would be even better if we could somehow make
 <code class="language-plaintext highlighter-rouge">continue_field</code> not recursive. “Trampolining” it somehow. 
 Instance methods:
-add_dead_path, after_lazy, arguments, authorized_new,
-continue_field, continue_value, dead_path?,
+after_lazy, arguments, authorized_new, continue_field,
+continue_value, dead_result?, deep_merge_selection_result,
 delete_interpreter_context, directives_include?, evaluate_selection,
-evaluate_selection_with_args, evaluate_selections, final_value,
-gather_selections, initialize, inspect, resolve_type,
+evaluate_selection_with_args, evaluate_selections, final_result,
+gather_selections, initialize, inspect, lazy?, resolve_type,
 resolve_with_directives, run_directive, run_eager,
-set_all_interpreter_context, set_interpreter_context,
-set_type_at_path, type_at, value_at,
-write_execution_errors_in_response, write_in_response,
-write_invalid_null_in_response</p>
+set_all_interpreter_context, set_graphql_dead,
+set_interpreter_context, set_result, tap_or_each</p>
 
 
   </body>
