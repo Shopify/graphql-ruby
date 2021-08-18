@@ -7,6 +7,14 @@ module GraphQL
       # @return [GraphQL::Schema::Argument, GraphQL::Schema::Field, GraphQL::Schema::Resolver, Class<GraphQL::Schema::InputObject>]
       attr_reader :validated
 
+      # If `true`, then objects that respond to `.blank?` and return true for `.blank?` should skip this validation
+      # @return [Boolean]
+      attr_reader :allow_blank
+
+      # If `true`, then incoming `null`s should skip this validation
+      # @return [Boolean]
+      attr_reader :allow_null
+
       # TODO should this implement `if:` and `unless:` ?
       # @param validated [GraphQL::Schema::Argument, GraphQL::Schema::Field, GraphQL::Schema::Resolver, Class<GraphQL::Schema::InputObject>] The argument or argument owner this validator is attached to
       # @param allow_blank [Boolean] if `true`, then objects that respond to `.blank?` and return true for `.blank?` will skip this validation
