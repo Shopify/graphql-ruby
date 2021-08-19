@@ -47,7 +47,7 @@ module GraphQL
         end
 
         def validate(object, context, value)
-          if @greater_than && value <= @greater_than
+          super || if @greater_than && value <= @greater_than
             partial_format(@message, { comparison: "greater than", target: @greater_than })
           elsif @greater_than_or_equal_to && value < @greater_than_or_equal_to
             partial_format(@message, { comparison: "greater than or equal to", target: @greater_than_or_equal_to })

@@ -43,7 +43,7 @@ module GraphQL
         end
 
         def validate(_object, _context, value)
-          if @maximum && value.length > @maximum
+          super || if @maximum && value.length > @maximum
             partial_format(@too_long, { count: @maximum })
           elsif @minimum && value.length < @minimum
             partial_format(@too_short, { count: @minimum })

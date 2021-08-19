@@ -28,29 +28,34 @@ module GraphQL
       # @param object [Object] The application object that this argument's field is being resolved for
       # @param context [GraphQL::Query::Context]
       # @param value [Object] The client-provided value for this argument (after parsing and coercing by the input type)
+      # @return [Boolean] If the argument's value should be validated or not.
+      def validate?(object, context, value)
+        if value.nil?
+          !allow_null # skip if allow_null
+        elsif value.respond_to?(:blank?) && value.blank?
+          !allow_blank # skip if allow_blank
+        else
+          true
+        end
+      end
+
+      # @param object [Object] The application object that this argument's field is being resolved for
+      # @param context [GraphQL::Query::Context]
+      # @param value [Object] The client-provided value for this argument (after parsing and coercing by the input type)
       # @return [nil, Array<String>, String] Error message or messages to add
       def validate(object, context, value)
-        raise GraphQL::RequiredImplementationMissingError, "Validator classes should implement #validate"
+        if value.nil?
+          "%{validated} can't be null"
+        elsif value.respond_to?(:blank?) && value.blank?
+          "%{validated} can't be blank"
+        end
       end
 
       # This is called by the validation system and eventually calls {#validate}.
       # @api private
       def apply(object, context, value)
-        if value.nil?
-          if @allow_null
-            nil # skip this
-          else
-            "%{validated} can't be null"
-          end
-        elsif value.respond_to?(:blank?) && value.blank?
-          if @allow_blank
-            nil # skip this
-          else
-            "%{validated} can't be blank"
-          end
-        else
-          validate(object, context, value)
-        end
+        return nil unless validate?(object, context, value)
+        validate(object, context, value)
       end
 
       # This is like `String#%`, but it supports the case that only some of `string`'s

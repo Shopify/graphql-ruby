@@ -38,7 +38,7 @@ module GraphQL
         end
 
         def validate(_object, _context, value)
-          if (@with_pattern && !value.match?(@with_pattern)) ||
+          super || if (@with_pattern && !value.match?(@with_pattern)) ||
               (@without_pattern && value.match?(@without_pattern))
             @message
           end

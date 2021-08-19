@@ -56,7 +56,7 @@ module GraphQL
             end
           end
 
-          if matched_conditions == 1
+          super || if matched_conditions == 1
             nil # OK
           else
             @message
