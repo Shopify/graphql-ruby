@@ -52,6 +52,7 @@ module GraphQL
     # @param ctx [GraphQL::Query::Context] The context for the current query
     # @return [GraphQL::ObjectType, nil] The type named `type_name` if it exists and implements this {InterfaceType}, (else `nil`)
     def get_possible_type(type_name, ctx)
+      type = type.call if type.is_a?(Proc)
       type = ctx.query.get_type(type_name)
       type if type && ctx.query.warden.possible_types(self).include?(type)
     end
