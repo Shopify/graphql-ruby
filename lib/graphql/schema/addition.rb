@@ -57,6 +57,12 @@ module GraphQL
             missed_late_types = 0
             update_type_owner(type_owner, type)
             add_type(type, owner: type_owner, late_types: late_types, path: [type.graphql_name])
+          elsif lt.is_a?(Proc)
+            type = lt.call
+            # Reset the counter, since we might succeed next go-round
+            missed_late_types = 0
+            update_type_owner(type_owner, type)
+            add_type(type, owner: type_owner, late_types: late_types, path: [type.graphql_name])
           elsif lt.is_a?(LateBoundType)
             if (type = get_type(lt.name))
               # Reset the counter, since we might succeed next go-round
@@ -143,7 +149,7 @@ module GraphQL
           else
             type = type_class
           end
-        elsif type.is_a?(String) || type.is_a?(GraphQL::Schema::LateBoundType)
+        elsif type.is_a?(String) || type.is_a?(Proc) || type.is_a?(GraphQL::Schema::LateBoundType)
           late_types << [owner, type]
           return
         end
