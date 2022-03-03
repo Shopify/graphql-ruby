@@ -19,7 +19,7 @@
           </a>
           <a href="/getting_started">Get Started</a>
           <a href="/guides">Guides</a>
-          <a href="/api-doc/1.12.16/">API</a>
+          <a href="/api-doc/2.0.2/">API</a>
           <a href="https://tinyletter.com/graphql-ruby">Newsletter</a>
           <a href="https://github.com/rmosolgo/graphql-ruby">Source Code</a>
           <a href="https://graphql.pro">Upgrade to Pro</a>
@@ -37,15 +37,83 @@
       </div>
     </div>
     <div class="container">
-      <p class="breadcrumb">
-  <a href="/">GraphQL</a>
-  &raquo; <a href="/guides">Guides</a>
-   &raquo; <a href="/guides#errors-guides">Errors</a>
-  &raquo; Error Handling
-</p>
+      <ul class="breadcrumb">
+  <li><a href="/guides">Guides</a></li>
+  <li>
+    <select class="jump-to-select" onchange="navigateToSelected(this)">
+      
+        <option  data-target="/schema/definition.html">Schema</option>
+      
+        <option  data-target="/queries/executing_queries.html">Queries</option>
+      
+        <option  data-target="/type_definitions/objects.html">Type Definitions</option>
+      
+        <option  data-target="/authorization/overview.html">Authorization</option>
+      
+        <option  data-target="/fields/introduction.html">Fields</option>
+      
+        <option  data-target="/mutations/mutation_root.html">Mutations</option>
+      
+        <option  selected data-target="/errors/overview.html">Errors</option>
+      
+        <option  data-target="/pagination/overview.html">Pagination</option>
+      
+        <option  data-target="/relay/range_add.html">Relay</option>
+      
+        <option  data-target="/dataloader/overview.html">Dataloader</option>
+      
+        <option  data-target="/subscriptions/overview.html">Subscriptions</option>
+      
+        <option  data-target="/pro/home.html">GraphQL Pro</option>
+      
+        <option  data-target="/operation_store/overview.html">GraphQL Pro - OperationStore</option>
+      
+        <option  data-target="/defer/overview.html">GraphQL Pro - Defer</option>
+      
+        <option  data-target="/limiters/overview.html">GraphQL Enterprise - Rate Limiters</option>
+      
+        <option  data-target="/object_cache/overview.html">GraphQL Enterprise - Object Cache</option>
+      
+        <option  data-target="/changesets/overview.html">GraphQL Enterprise - Changesets</option>
+      
+        <option  data-target="/javascript_client/overview.html">JavaScript Client</option>
+      
+        <option  data-target="/language_tools/visitor.html">Language Tools</option>
+      
+        <option  data-target="/testing/overview.html">Testing</option>
+      
+        <option  data-target="/development.html">Other</option>
+      
+    </select>
+  </li>
+  <li>
+    <select class="jump-to-select" onchange="navigateToSelected(this)">
+      
+        <option  data-target="/errors/overview.html">Errors in GraphQL</option>
+      
+        <option  data-target="/errors/execution_errors.html">Top-level "errors"</option>
+      
+        <option  selected data-target="/errors/error_handling.html">Error Handling</option>
+      
+        <option  data-target="/errors/type_errors.html">Type Errors</option>
+      
+    </select>
+  </li>
+</ul>
+
 
 
 <h1 class="guide-header">Error Handling</h1>
+<div class="guide-table-of-contents"><div class="table-of-contents">
+  <h3 class="contents-header">Contents</h3>
+  <ul class="contents-list">
+    <li class='contents-entry entry-depth-2'>
+                <span class='section-count'>1. </span><a href='#add-error-handlers'>Add error handlers
+</a>
+              </li>
+  </ul>
+</div>
+</div>
 <div class="guide-container">
   <p>You can configure your schema to rescue application errors during field resolution. Errors during batch loading will also be rescued.</p>
 
@@ -79,13 +147,13 @@
   <li><strong><code class="language-plaintext highlighter-rouge">obj</code></strong> is the object which was having a field resolved against it</li>
   <li><strong><code class="language-plaintext highlighter-rouge">args</code></strong> is the Hash of arguments passed to the resolver</li>
   <li><strong><code class="language-plaintext highlighter-rouge">ctx</code></strong> is the query context</li>
-  <li><strong><code class="language-plaintext highlighter-rouge">field</code></strong> is the <a href="/api-doc/1.12.16/GraphQL/Schema/Field" target="_blank" title="API docs for GraphQL::Schema::Field"><code>GraphQL::Schema::Field</code></a> instance for the field where the error was rescued</li>
+  <li><strong><code class="language-plaintext highlighter-rouge">field</code></strong> is the <a href="/api-doc/2.0.2/GraphQL/Schema/Field" target="_blank" title="API docs for GraphQL::Schema::Field"><code>GraphQL::Schema::Field</code></a> instance for the field where the error was rescued</li>
 </ul>
 
 <p>Inside the handler, you can:</p>
 
 <ul>
-  <li>Raise a GraphQL-friendly <a href="/api-doc/1.12.16/GraphQL/ExecutionError" target="_blank" title="API docs for GraphQL::ExecutionError"><code>GraphQL::ExecutionError</code></a> to return to the user</li>
+  <li>Raise a GraphQL-friendly <a href="/api-doc/2.0.2/GraphQL/ExecutionError" target="_blank" title="API docs for GraphQL::ExecutionError"><code>GraphQL::ExecutionError</code></a> to return to the user</li>
   <li>Re-raise the given <code class="language-plaintext highlighter-rouge">err</code> to crash the query and halt execution. (The error will propagate to your application, eg, the controller.)</li>
   <li>Report some metrics from the error, if applicable</li>
   <li>Return a new value to be used for the error case (if not raising another error)</li>
@@ -112,6 +180,10 @@
       header.textContent = "";
       header.appendChild(headerLink);
     }
+  }
+  function navigateToSelected(selectElement) {
+    var nextPage = selectElement.selectedOptions[0].dataset["target"]
+    document.location = nextPage
   }
 </script>
 

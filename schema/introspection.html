@@ -19,7 +19,7 @@
           </a>
           <a href="/getting_started">Get Started</a>
           <a href="/guides">Guides</a>
-          <a href="/api-doc/1.12.16/">API</a>
+          <a href="/api-doc/2.0.2/">API</a>
           <a href="https://tinyletter.com/graphql-ruby">Newsletter</a>
           <a href="https://github.com/rmosolgo/graphql-ruby">Source Code</a>
           <a href="https://graphql.pro">Upgrade to Pro</a>
@@ -37,15 +37,115 @@
       </div>
     </div>
     <div class="container">
-      <p class="breadcrumb">
-  <a href="/">GraphQL</a>
-  &raquo; <a href="/guides">Guides</a>
-   &raquo; <a href="/guides#schema-guides">Schema</a>
-  &raquo; Introspection
-</p>
+      <ul class="breadcrumb">
+  <li><a href="/guides">Guides</a></li>
+  <li>
+    <select class="jump-to-select" onchange="navigateToSelected(this)">
+      
+        <option  selected data-target="/schema/definition.html">Schema</option>
+      
+        <option  data-target="/queries/executing_queries.html">Queries</option>
+      
+        <option  data-target="/type_definitions/objects.html">Type Definitions</option>
+      
+        <option  data-target="/authorization/overview.html">Authorization</option>
+      
+        <option  data-target="/fields/introduction.html">Fields</option>
+      
+        <option  data-target="/mutations/mutation_root.html">Mutations</option>
+      
+        <option  data-target="/errors/overview.html">Errors</option>
+      
+        <option  data-target="/pagination/overview.html">Pagination</option>
+      
+        <option  data-target="/relay/range_add.html">Relay</option>
+      
+        <option  data-target="/dataloader/overview.html">Dataloader</option>
+      
+        <option  data-target="/subscriptions/overview.html">Subscriptions</option>
+      
+        <option  data-target="/pro/home.html">GraphQL Pro</option>
+      
+        <option  data-target="/operation_store/overview.html">GraphQL Pro - OperationStore</option>
+      
+        <option  data-target="/defer/overview.html">GraphQL Pro - Defer</option>
+      
+        <option  data-target="/limiters/overview.html">GraphQL Enterprise - Rate Limiters</option>
+      
+        <option  data-target="/object_cache/overview.html">GraphQL Enterprise - Object Cache</option>
+      
+        <option  data-target="/changesets/overview.html">GraphQL Enterprise - Changesets</option>
+      
+        <option  data-target="/javascript_client/overview.html">JavaScript Client</option>
+      
+        <option  data-target="/language_tools/visitor.html">Language Tools</option>
+      
+        <option  data-target="/testing/overview.html">Testing</option>
+      
+        <option  data-target="/development.html">Other</option>
+      
+    </select>
+  </li>
+  <li>
+    <select class="jump-to-select" onchange="navigateToSelected(this)">
+      
+        <option  data-target="/schema/definition.html">Definition</option>
+      
+        <option  data-target="/schema/root_types.html">Root Types</option>
+      
+        <option  data-target="/schema/generators.html">Generators</option>
+      
+        <option  selected data-target="/schema/introspection.html">Introspection</option>
+      
+        <option  data-target="/schema/lazy_execution.html">Lazy Execution</option>
+      
+        <option  data-target="/schema/sdl.html">Parsing GraphQL Schema Definition Language into a Ruby Schema</option>
+      
+        <option  data-target="/schema/dynamic_types.html">Dynamic types and fields</option>
+      
+        <option  data-target="/schema/object_identification.html">Object Identification</option>
+      
+    </select>
+  </li>
+</ul>
+
 
 
 <h1 class="guide-header">Introspection</h1>
+<div class="guide-table-of-contents"><div class="table-of-contents">
+  <h3 class="contents-header">Contents</h3>
+  <ul class="contents-list">
+    <li class='contents-entry entry-depth-2'>
+                <span class='section-count'>1. </span><a href='#customizing-introspection'>Customizing Introspection
+</a>
+              </li>
+<li class='contents-entry entry-depth-3'>
+                <span class='section-count'></span><a href='#introspection-namespace'>Introspection Namespace
+</a>
+              </li>
+<li class='contents-entry entry-depth-3'>
+                <span class='section-count'></span><a href='#custom-introspection-types'>Custom Introspection Types
+</a>
+              </li>
+<li class='contents-entry entry-depth-4'>
+                <span class='section-count'></span><a href='#extending-a-built-in-type'>Extending a Built-in Type
+</a>
+              </li>
+<li class='contents-entry entry-depth-3'>
+                <span class='section-count'></span><a href='#introspection-entry-points'>Introspection Entry Points
+</a>
+              </li>
+<li class='contents-entry entry-depth-3'>
+                <span class='section-count'></span><a href='#dynamic-fields'>Dynamic Fields
+</a>
+              </li>
+<li class='contents-entry entry-depth-2'>
+                <span class='section-count'>2. </span><a href='#disabling-introspection'>Disabling Introspection
+</a>
+              </li>
+  </ul>
+</div>
+</div>
 <div class="guide-container">
   <p>A GraphQL schema has a <a href="https://graphql.org/learn/introspection/">built-in introspection system</a> that publishes the schema’s structure. In fact, the introspection system can be queried using GraphQL, for example:</p>
 
@@ -170,42 +270,42 @@
     <tr>
       <td><code class="language-plaintext highlighter-rouge">SchemaType</code></td>
       <td><code class="language-plaintext highlighter-rouge">__Schema</code></td>
-      <td><a href="/api-doc/1.12.16/GraphQL/Introspection/SchemaType" target="_blank" title="API docs for GraphQL::Introspection::SchemaType"><code>GraphQL::Introspection::SchemaType</code></a></td>
+      <td><a href="/api-doc/2.0.2/GraphQL/Introspection/SchemaType" target="_blank" title="API docs for GraphQL::Introspection::SchemaType"><code>GraphQL::Introspection::SchemaType</code></a></td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">TypeType</code></td>
       <td><code class="language-plaintext highlighter-rouge">__Type</code></td>
-      <td><a href="/api-doc/1.12.16/GraphQL/Introspection/TypeType" target="_blank" title="API docs for GraphQL::Introspection::TypeType"><code>GraphQL::Introspection::TypeType</code></a></td>
+      <td><a href="/api-doc/2.0.2/GraphQL/Introspection/TypeType" target="_blank" title="API docs for GraphQL::Introspection::TypeType"><code>GraphQL::Introspection::TypeType</code></a></td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">DirectiveType</code></td>
       <td><code class="language-plaintext highlighter-rouge">__Directive</code></td>
-      <td><a href="/api-doc/1.12.16/GraphQL/Introspection/DirectiveType" target="_blank" title="API docs for GraphQL::Introspection::DirectiveType"><code>GraphQL::Introspection::DirectiveType</code></a></td>
+      <td><a href="/api-doc/2.0.2/GraphQL/Introspection/DirectiveType" target="_blank" title="API docs for GraphQL::Introspection::DirectiveType"><code>GraphQL::Introspection::DirectiveType</code></a></td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">DirectiveLocationType</code></td>
       <td><code class="language-plaintext highlighter-rouge">__DirectiveLocation</code></td>
-      <td><a href="/api-doc/1.12.16/GraphQL/Introspection/DirectiveLocationEnum" target="_blank" title="API docs for GraphQL::Introspection::DirectiveLocationEnum"><code>GraphQL::Introspection::DirectiveLocationEnum</code></a></td>
+      <td><a href="/api-doc/2.0.2/GraphQL/Introspection/DirectiveLocationEnum" target="_blank" title="API docs for GraphQL::Introspection::DirectiveLocationEnum"><code>GraphQL::Introspection::DirectiveLocationEnum</code></a></td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">EnumValueType</code></td>
       <td><code class="language-plaintext highlighter-rouge">__EnumValue</code></td>
-      <td><a href="/api-doc/1.12.16/GraphQL/Introspection/EnumValueType" target="_blank" title="API docs for GraphQL::Introspection::EnumValueType"><code>GraphQL::Introspection::EnumValueType</code></a></td>
+      <td><a href="/api-doc/2.0.2/GraphQL/Introspection/EnumValueType" target="_blank" title="API docs for GraphQL::Introspection::EnumValueType"><code>GraphQL::Introspection::EnumValueType</code></a></td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">FieldType</code></td>
       <td><code class="language-plaintext highlighter-rouge">__Field</code></td>
-      <td><a href="/api-doc/1.12.16/GraphQL/Introspection/FieldType" target="_blank" title="API docs for GraphQL::Introspection::FieldType"><code>GraphQL::Introspection::FieldType</code></a></td>
+      <td><a href="/api-doc/2.0.2/GraphQL/Introspection/FieldType" target="_blank" title="API docs for GraphQL::Introspection::FieldType"><code>GraphQL::Introspection::FieldType</code></a></td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">InputValueType</code></td>
       <td><code class="language-plaintext highlighter-rouge">__InputValue</code></td>
-      <td><a href="/api-doc/1.12.16/GraphQL/Introspection/InputValueType" target="_blank" title="API docs for GraphQL::Introspection::InputValueType"><code>GraphQL::Introspection::InputValueType</code></a></td>
+      <td><a href="/api-doc/2.0.2/GraphQL/Introspection/InputValueType" target="_blank" title="API docs for GraphQL::Introspection::InputValueType"><code>GraphQL::Introspection::InputValueType</code></a></td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">TypeKindType</code></td>
       <td><code class="language-plaintext highlighter-rouge">__TypeKind</code></td>
-      <td><a href="/api-doc/1.12.16/GraphQL/Introspection/TypeKindEnum" target="_blank" title="API docs for GraphQL::Introspection::TypeKindEnum"><code>GraphQL::Introspection::TypeKindEnum</code></a></td>
+      <td><a href="/api-doc/2.0.2/GraphQL/Introspection/TypeKindEnum" target="_blank" title="API docs for GraphQL::Introspection::TypeKindEnum"><code>GraphQL::Introspection::TypeKindEnum</code></a></td>
     </tr>
   </tbody>
 </table>
@@ -305,6 +405,10 @@
       header.textContent = "";
       header.appendChild(headerLink);
     }
+  }
+  function navigateToSelected(selectElement) {
+    var nextPage = selectElement.selectedOptions[0].dataset["target"]
+    document.location = nextPage
   }
 </script>
 

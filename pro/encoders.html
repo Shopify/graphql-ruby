@@ -19,7 +19,7 @@
           </a>
           <a href="/getting_started">Get Started</a>
           <a href="/guides">Guides</a>
-          <a href="/api-doc/1.12.16/">API</a>
+          <a href="/api-doc/2.0.2/">API</a>
           <a href="https://tinyletter.com/graphql-ruby">Newsletter</a>
           <a href="https://github.com/rmosolgo/graphql-ruby">Source Code</a>
           <a href="https://graphql.pro">Upgrade to Pro</a>
@@ -37,12 +37,71 @@
       </div>
     </div>
     <div class="container">
-      <p class="breadcrumb">
-  <a href="/">GraphQL</a>
-  &raquo; <a href="/guides">Guides</a>
-   &raquo; <a href="/guides#graphql-pro-guides">GraphQL Pro</a>
-  &raquo; Encrypted, Versioned Cursors and IDs
-</p>
+      <ul class="breadcrumb">
+  <li><a href="/guides">Guides</a></li>
+  <li>
+    <select class="jump-to-select" onchange="navigateToSelected(this)">
+      
+        <option  data-target="/schema/definition.html">Schema</option>
+      
+        <option  data-target="/queries/executing_queries.html">Queries</option>
+      
+        <option  data-target="/type_definitions/objects.html">Type Definitions</option>
+      
+        <option  data-target="/authorization/overview.html">Authorization</option>
+      
+        <option  data-target="/fields/introduction.html">Fields</option>
+      
+        <option  data-target="/mutations/mutation_root.html">Mutations</option>
+      
+        <option  data-target="/errors/overview.html">Errors</option>
+      
+        <option  data-target="/pagination/overview.html">Pagination</option>
+      
+        <option  data-target="/relay/range_add.html">Relay</option>
+      
+        <option  data-target="/dataloader/overview.html">Dataloader</option>
+      
+        <option  data-target="/subscriptions/overview.html">Subscriptions</option>
+      
+        <option  selected data-target="/pro/home.html">GraphQL Pro</option>
+      
+        <option  data-target="/operation_store/overview.html">GraphQL Pro - OperationStore</option>
+      
+        <option  data-target="/defer/overview.html">GraphQL Pro - Defer</option>
+      
+        <option  data-target="/limiters/overview.html">GraphQL Enterprise - Rate Limiters</option>
+      
+        <option  data-target="/object_cache/overview.html">GraphQL Enterprise - Object Cache</option>
+      
+        <option  data-target="/changesets/overview.html">GraphQL Enterprise - Changesets</option>
+      
+        <option  data-target="/javascript_client/overview.html">JavaScript Client</option>
+      
+        <option  data-target="/language_tools/visitor.html">Language Tools</option>
+      
+        <option  data-target="/testing/overview.html">Testing</option>
+      
+        <option  data-target="/development.html">Other</option>
+      
+    </select>
+  </li>
+  <li>
+    <select class="jump-to-select" onchange="navigateToSelected(this)">
+      
+        <option  data-target="/pro/home.html">GraphQL::Pro Home</option>
+      
+        <option  data-target="/pro/installation.html">Installation</option>
+      
+        <option  data-target="/pro/dashboard.html">Dashboard</option>
+      
+        <option  selected data-target="/pro/encoders.html">Encrypted, Versioned Cursors and IDs</option>
+      
+        <option  data-target="/pro/privacy.html">Privacy</option>
+      
+    </select>
+  </li>
+</ul>
 
 
   <div class="pro-header">
@@ -54,7 +113,34 @@
     </p>
   </div>
 
+
 <h1 class="guide-header">Encrypted, Versioned Cursors and IDs</h1>
+<div class="guide-table-of-contents"><div class="table-of-contents">
+  <h3 class="contents-header">Contents</h3>
+  <ul class="contents-list">
+    <li class='contents-entry entry-depth-2'>
+                <span class='section-count'>1. </span><a href='#defining-an-encoder'>Defining an Encoder
+</a>
+              </li>
+<li class='contents-entry entry-depth-2'>
+                <span class='section-count'>2. </span><a href='#encrypting-cursors'>Encrypting Cursors
+</a>
+              </li>
+<li class='contents-entry entry-depth-2'>
+                <span class='section-count'>3. </span><a href='#encrypting-ids'>Encrypting IDs
+</a>
+              </li>
+<li class='contents-entry entry-depth-2'>
+                <span class='section-count'>4. </span><a href='#versioning'>Versioning
+</a>
+              </li>
+<li class='contents-entry entry-depth-2'>
+                <span class='section-count'>5. </span><a href='#encoding'>Encoding
+</a>
+              </li>
+  </ul>
+</div>
+</div>
 <div class="guide-container">
   <p><code class="language-plaintext highlighter-rouge">GraphQL::Pro</code> includes a mechanism for serving encrypted, versioned cursors and IDs.  This provides some benefits:</p>
 
@@ -98,7 +184,7 @@
 
 <p>Now, built-in connection implementations will use that encoder for cursors.</p>
 
-<p>If you implement your own connections, you can access the encoder’s encryption methods via <a href="/api-doc/1.12.16/GraphQL/Relay/BaseConnection#encode-instance_method" target="_blank" title="API docs for GraphQL::Relay::BaseConnection#encode"><code>GraphQL::Relay::BaseConnection#encode</code></a> and <a href="/api-doc/1.12.16/GraphQL/Relay/BaseConnection#decode-instance_method" target="_blank" title="API docs for GraphQL::Relay::BaseConnection#decode"><code>GraphQL::Relay::BaseConnection#decode</code></a>.</p>
+<p>If you implement your own connections, you can access the encoder’s encryption methods via <a href="/api-doc/2.0.2/GraphQL/Pagination/Connection#encode-instance_method" target="_blank" title="API docs for GraphQL::Pagination::Connection#encode"><code>GraphQL::Pagination::Connection#encode</code></a> and <a href="/api-doc/2.0.2/GraphQL/Pagination/Connection#decode-instance_method" target="_blank" title="API docs for GraphQL::Pagination::Connection#decode"><code>GraphQL::Pagination::Connection#decode</code></a>.</p>
 
 <h2 id="encrypting-ids">Encrypting IDs</h2>
 
@@ -200,6 +286,10 @@
       header.textContent = "";
       header.appendChild(headerLink);
     }
+  }
+  function navigateToSelected(selectElement) {
+    var nextPage = selectElement.selectedOptions[0].dataset["target"]
+    document.location = nextPage
   }
 </script>
 

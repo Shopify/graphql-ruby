@@ -19,7 +19,7 @@
           </a>
           <a href="/getting_started">Get Started</a>
           <a href="/guides">Guides</a>
-          <a href="/api-doc/1.12.16/">API</a>
+          <a href="/api-doc/2.0.2/">API</a>
           <a href="https://tinyletter.com/graphql-ruby">Newsletter</a>
           <a href="https://github.com/rmosolgo/graphql-ruby">Source Code</a>
           <a href="https://graphql.pro">Upgrade to Pro</a>
@@ -37,12 +37,83 @@
       </div>
     </div>
     <div class="container">
-      <p class="breadcrumb">
-  <a href="/">GraphQL</a>
-  &raquo; <a href="/guides">Guides</a>
-   &raquo; <a href="/guides#type-definitions-guides">Type Definitions</a>
-  &raquo; Directives
-</p>
+      <ul class="breadcrumb">
+  <li><a href="/guides">Guides</a></li>
+  <li>
+    <select class="jump-to-select" onchange="navigateToSelected(this)">
+      
+        <option  data-target="/schema/definition.html">Schema</option>
+      
+        <option  data-target="/queries/executing_queries.html">Queries</option>
+      
+        <option  selected data-target="/type_definitions/objects.html">Type Definitions</option>
+      
+        <option  data-target="/authorization/overview.html">Authorization</option>
+      
+        <option  data-target="/fields/introduction.html">Fields</option>
+      
+        <option  data-target="/mutations/mutation_root.html">Mutations</option>
+      
+        <option  data-target="/errors/overview.html">Errors</option>
+      
+        <option  data-target="/pagination/overview.html">Pagination</option>
+      
+        <option  data-target="/relay/range_add.html">Relay</option>
+      
+        <option  data-target="/dataloader/overview.html">Dataloader</option>
+      
+        <option  data-target="/subscriptions/overview.html">Subscriptions</option>
+      
+        <option  data-target="/pro/home.html">GraphQL Pro</option>
+      
+        <option  data-target="/operation_store/overview.html">GraphQL Pro - OperationStore</option>
+      
+        <option  data-target="/defer/overview.html">GraphQL Pro - Defer</option>
+      
+        <option  data-target="/limiters/overview.html">GraphQL Enterprise - Rate Limiters</option>
+      
+        <option  data-target="/object_cache/overview.html">GraphQL Enterprise - Object Cache</option>
+      
+        <option  data-target="/changesets/overview.html">GraphQL Enterprise - Changesets</option>
+      
+        <option  data-target="/javascript_client/overview.html">JavaScript Client</option>
+      
+        <option  data-target="/language_tools/visitor.html">Language Tools</option>
+      
+        <option  data-target="/testing/overview.html">Testing</option>
+      
+        <option  data-target="/development.html">Other</option>
+      
+    </select>
+  </li>
+  <li>
+    <select class="jump-to-select" onchange="navigateToSelected(this)">
+      
+        <option  data-target="/type_definitions/objects.html">Objects</option>
+      
+        <option  data-target="/type_definitions/scalars.html">Scalars</option>
+      
+        <option  data-target="/type_definitions/enums.html">Enums</option>
+      
+        <option  data-target="/type_definitions/input_objects.html">Input Objects</option>
+      
+        <option  data-target="/type_definitions/interfaces.html">Interfaces</option>
+      
+        <option  data-target="/type_definitions/unions.html">Unions</option>
+      
+        <option  data-target="/type_definitions/lists.html">Lists</option>
+      
+        <option  data-target="/type_definitions/non_nulls.html">Non-Null Types</option>
+      
+        <option  data-target="/type_definitions/extensions.html">Extending the GraphQL-Ruby Type Definition System</option>
+      
+        <option  selected data-target="/type_definitions/directives.html">Directives</option>
+      
+        <option  data-target="/type_definitions/field_extensions.html">Field Extensions</option>
+      
+    </select>
+  </li>
+</ul>
 
   <div class="experimental-header">
     <p>
@@ -55,7 +126,42 @@
   </div>
 
 
+
 <h1 class="guide-header">Directives</h1>
+<div class="guide-table-of-contents"><div class="table-of-contents">
+  <h3 class="contents-header">Contents</h3>
+  <ul class="contents-list">
+    <li class='contents-entry entry-depth-2'>
+                <span class='section-count'>1. </span><a href='#runtime-directives'>Runtime Directives
+</a>
+              </li>
+<li class='contents-entry entry-depth-3'>
+                <span class='section-count'></span><a href='#custom-runtime-directives'>Custom Runtime Directives
+</a>
+              </li>
+<li class='contents-entry entry-depth-3'>
+                <span class='section-count'></span><a href='#runtime-hooks'>Runtime hooks
+</a>
+              </li>
+<li class='contents-entry entry-depth-2'>
+                <span class='section-count'>2. </span><a href='#schema-directives'>Schema Directives
+</a>
+              </li>
+<li class='contents-entry entry-depth-3'>
+                <span class='section-count'></span><a href='#custom-schema-directives'>Custom Schema Directives
+</a>
+              </li>
+<li class='contents-entry entry-depth-2'>
+                <span class='section-count'>3. </span><a href='#custom-name'>Custom Name
+</a>
+              </li>
+<li class='contents-entry entry-depth-2'>
+                <span class='section-count'>4. </span><a href='#arguments'>Arguments
+</a>
+              </li>
+  </ul>
+</div>
+</div>
 <div class="guide-container">
   <p>Directives are system-defined keywords with two kinds of uses:</p>
 
@@ -83,15 +189,13 @@
 <p>Here’s how the two built-in directives work:</p>
 
 <ul>
-  <li><code class="language-plaintext highlighter-rouge">@skip(if: ...)</code> skips the selection if the <code class="language-plaintext highlighter-rouge">if: ...</code> value is truthy (<a href="/api-doc/1.12.16/GraphQL/Schema/Directive/Skip" target="_blank" title="API docs for GraphQL::Schema::Directive::Skip"><code>GraphQL::Schema::Directive::Skip</code></a>)</li>
-  <li><code class="language-plaintext highlighter-rouge">@include(if: ...)</code> includes the selection if the <code class="language-plaintext highlighter-rouge">if: ...</code> value is truthy (<a href="/api-doc/1.12.16/GraphQL/Schema/Directive/Include" target="_blank" title="API docs for GraphQL::Schema::Directive::Include"><code>GraphQL::Schema::Directive::Include</code></a>)</li>
+  <li><code class="language-plaintext highlighter-rouge">@skip(if: ...)</code> skips the selection if the <code class="language-plaintext highlighter-rouge">if: ...</code> value is truthy (<a href="/api-doc/2.0.2/GraphQL/Schema/Directive/Skip" target="_blank" title="API docs for GraphQL::Schema::Directive::Skip"><code>GraphQL::Schema::Directive::Skip</code></a>)</li>
+  <li><code class="language-plaintext highlighter-rouge">@include(if: ...)</code> includes the selection if the <code class="language-plaintext highlighter-rouge">if: ...</code> value is truthy (<a href="/api-doc/2.0.2/GraphQL/Schema/Directive/Include" target="_blank" title="API docs for GraphQL::Schema::Directive::Include"><code>GraphQL::Schema::Directive::Include</code></a>)
+    <h3 id="custom-runtime-directives">Custom Runtime Directives</h3>
+  </li>
 </ul>
 
-<p>GraphQL-Ruby also supports custom runtime directives for use with the <a href="/queries/interpreter">interpreter runtime</a>.</p>
-
-<h3 id="custom-runtime-directives">Custom Runtime Directives</h3>
-
-<p>Custom directives extend <a href="/api-doc/1.12.16/GraphQL/Schema/Directive" target="_blank" title="API docs for GraphQL::Schema::Directive"><code>GraphQL::Schema::Directive</code></a>:</p>
+<p>Custom directives extend <a href="/api-doc/2.0.2/GraphQL/Schema/Directive" target="_blank" title="API docs for GraphQL::Schema::Directive"><code>GraphQL::Schema::Directive</code></a>:</p>
 
 <div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># app/graphql/directives/my_directive.rb</span>
 <span class="k">class</span> <span class="nc">Directives::MyDirective</span> <span class="o">&lt;</span> <span class="no">GraphQL</span><span class="o">::</span><span class="no">Schema</span><span class="o">::</span><span class="no">Directive</span>
@@ -117,7 +221,7 @@
 <span class="p">}</span>
 </code></pre></div></div>
 
-<p><a href="/api-doc/1.12.16/GraphQL/Schema/Directive/Feature" target="_blank" title="API docs for GraphQL::Schema::Directive::Feature"><code>GraphQL::Schema::Directive::Feature</code></a> and <a href="/api-doc/1.12.16/GraphQL/Schema/Directive/Transform" target="_blank" title="API docs for GraphQL::Schema::Directive::Transform"><code>GraphQL::Schema::Directive::Transform</code></a> are included in the library as examples.</p>
+<p><a href="/api-doc/2.0.2/GraphQL/Schema/Directive/Feature" target="_blank" title="API docs for GraphQL::Schema::Directive::Feature"><code>GraphQL::Schema::Directive::Feature</code></a> and <a href="/api-doc/2.0.2/GraphQL/Schema/Directive/Transform" target="_blank" title="API docs for GraphQL::Schema::Directive::Transform"><code>GraphQL::Schema::Directive::Transform</code></a> are included in the library as examples.</p>
 
 <h3 id="runtime-hooks">Runtime hooks</h3>
 
@@ -145,11 +249,11 @@
 
 <h3 id="custom-schema-directives">Custom Schema Directives</h3>
 
-<p>To make a custom schema directive, extend <a href="/api-doc/1.12.16/GraphQL/Schema/Directive" target="_blank" title="API docs for GraphQL::Schema::Directive"><code>GraphQL::Schema::Directive</code></a>:</p>
+<p>To make a custom schema directive, extend <a href="/api-doc/2.0.2/GraphQL/Schema/Directive" target="_blank" title="API docs for GraphQL::Schema::Directive"><code>GraphQL::Schema::Directive</code></a>:</p>
 
 <div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># app/graphql/directives/permission.rb</span>
 <span class="k">class</span> <span class="nc">Directives::Permission</span> <span class="o">&lt;</span> <span class="no">GraphQL</span><span class="o">::</span><span class="no">Schema</span><span class="o">::</span><span class="no">Directive</span>
-  <span class="n">argument</span> <span class="ss">:level</span><span class="p">,</span> <span class="no">String</span><span class="p">,</span> <span class="ss">required: </span><span class="kp">true</span>
+  <span class="n">argument</span> <span class="ss">:level</span><span class="p">,</span> <span class="no">String</span>
   <span class="n">locations</span> <span class="no">FIELD_DEFINITION</span><span class="p">,</span> <span class="no">OBJECT</span>
 <span class="k">end</span>
 </code></pre></div></div>
@@ -171,16 +275,16 @@
 
 <ul>
   <li>the configured object’s <code class="language-plaintext highlighter-rouge">.directives</code> method will return an array containing an instance of the specified directive</li>
-  <li>IDL dumps (from <a href="/api-doc/1.12.16/GraphQL/Schema#to_definition-class_method" target="_blank" title="API docs for GraphQL::Schema.to_definition"><code>Schema.to_definition</code></a>) will include the configured directives</li>
+  <li>IDL dumps (from <a href="/api-doc/2.0.2/GraphQL/Schema#to_definition-class_method" target="_blank" title="API docs for GraphQL::Schema.to_definition"><code>Schema.to_definition</code></a>) will include the configured directives</li>
 </ul>
 
-<p>Similarly, <a href="/api-doc/1.12.16/GraphQL/Schema#from_definition-class_method" target="_blank" title="API docs for GraphQL::Schema.from_definition"><code>Schema.from_definition</code></a> parses directives from IDL strings.</p>
+<p>Similarly, <a href="/api-doc/2.0.2/GraphQL/Schema#from_definition-class_method" target="_blank" title="API docs for GraphQL::Schema.from_definition"><code>Schema.from_definition</code></a> parses directives from IDL strings.</p>
 
 <p>For a couple of built-in examples, check out:</p>
 
 <ul>
-  <li><a href="/api-doc/1.12.16/GraphQL/Schema/Directive/Deprecated" target="_blank" title="API docs for GraphQL::Schema::Directive::Deprecated"><code>GraphQL::Schema::Directive::Deprecated</code></a> which implements <code class="language-plaintext highlighter-rouge">deprecation_reason</code> (via <a href="/api-doc/1.12.16/GraphQL/Schema/Member/HasDeprecationReason" target="_blank" title="API docs for GraphQL::Schema::Member::HasDeprecationReason"><code>GraphQL::Schema::Member::HasDeprecationReason</code></a>)</li>
-  <li><a href="/api-doc/1.12.16/GraphQL/Schema/Directive/Flagged" target="_blank" title="API docs for GraphQL::Schema::Directive::Flagged"><code>GraphQL::Schema::Directive::Flagged</code></a>, which is an example of using schema directives to implement <a href="/authorization/visibility">visibility</a></li>
+  <li><a href="/api-doc/2.0.2/GraphQL/Schema/Directive/Deprecated" target="_blank" title="API docs for GraphQL::Schema::Directive::Deprecated"><code>GraphQL::Schema::Directive::Deprecated</code></a> which implements <code class="language-plaintext highlighter-rouge">deprecation_reason</code> (via <a href="/api-doc/2.0.2/GraphQL/Schema/Member/HasDeprecationReason" target="_blank" title="API docs for GraphQL::Schema::Member::HasDeprecationReason"><code>GraphQL::Schema::Member::HasDeprecationReason</code></a>)</li>
+  <li><a href="/api-doc/2.0.2/GraphQL/Schema/Directive/Flagged" target="_blank" title="API docs for GraphQL::Schema::Directive::Flagged"><code>GraphQL::Schema::Directive::Flagged</code></a>, which is an example of using schema directives to implement <a href="/authorization/visibility">visibility</a></li>
 </ul>
 
 <h2 id="custom-name">Custom Name</h2>
@@ -196,7 +300,7 @@
 
 <p>Like fields, directives may have <a href="/fields/arguments">arguments</a> :</p>
 
-<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">argument</span> <span class="ss">:if</span><span class="p">,</span> <span class="no">Boolean</span><span class="p">,</span> <span class="ss">required: </span><span class="kp">true</span><span class="p">,</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">argument</span> <span class="ss">:if</span><span class="p">,</span> <span class="no">Boolean</span><span class="p">,</span>
   <span class="ss">description: </span><span class="s2">"Skips the selection if this condition is true"</span>
 </code></pre></div></div>
 
@@ -221,6 +325,10 @@
       header.textContent = "";
       header.appendChild(headerLink);
     }
+  }
+  function navigateToSelected(selectElement) {
+    var nextPage = selectElement.selectedOptions[0].dataset["target"]
+    document.location = nextPage
   }
 </script>
 

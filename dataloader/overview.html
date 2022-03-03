@@ -19,7 +19,7 @@
           </a>
           <a href="/getting_started">Get Started</a>
           <a href="/guides">Guides</a>
-          <a href="/api-doc/1.12.16/">API</a>
+          <a href="/api-doc/2.0.2/">API</a>
           <a href="https://tinyletter.com/graphql-ruby">Newsletter</a>
           <a href="https://github.com/rmosolgo/graphql-ruby">Source Code</a>
           <a href="https://graphql.pro">Upgrade to Pro</a>
@@ -37,27 +37,105 @@
       </div>
     </div>
     <div class="container">
-      <p class="breadcrumb">
-  <a href="/">GraphQL</a>
-  &raquo; <a href="/guides">Guides</a>
-   &raquo; <a href="/guides#dataloader-guides">Dataloader</a>
-  &raquo; Overview
-</p>
+      <ul class="breadcrumb">
+  <li><a href="/guides">Guides</a></li>
+  <li>
+    <select class="jump-to-select" onchange="navigateToSelected(this)">
+      
+        <option  data-target="/schema/definition.html">Schema</option>
+      
+        <option  data-target="/queries/executing_queries.html">Queries</option>
+      
+        <option  data-target="/type_definitions/objects.html">Type Definitions</option>
+      
+        <option  data-target="/authorization/overview.html">Authorization</option>
+      
+        <option  data-target="/fields/introduction.html">Fields</option>
+      
+        <option  data-target="/mutations/mutation_root.html">Mutations</option>
+      
+        <option  data-target="/errors/overview.html">Errors</option>
+      
+        <option  data-target="/pagination/overview.html">Pagination</option>
+      
+        <option  data-target="/relay/range_add.html">Relay</option>
+      
+        <option  selected data-target="/dataloader/overview.html">Dataloader</option>
+      
+        <option  data-target="/subscriptions/overview.html">Subscriptions</option>
+      
+        <option  data-target="/pro/home.html">GraphQL Pro</option>
+      
+        <option  data-target="/operation_store/overview.html">GraphQL Pro - OperationStore</option>
+      
+        <option  data-target="/defer/overview.html">GraphQL Pro - Defer</option>
+      
+        <option  data-target="/limiters/overview.html">GraphQL Enterprise - Rate Limiters</option>
+      
+        <option  data-target="/object_cache/overview.html">GraphQL Enterprise - Object Cache</option>
+      
+        <option  data-target="/changesets/overview.html">GraphQL Enterprise - Changesets</option>
+      
+        <option  data-target="/javascript_client/overview.html">JavaScript Client</option>
+      
+        <option  data-target="/language_tools/visitor.html">Language Tools</option>
+      
+        <option  data-target="/testing/overview.html">Testing</option>
+      
+        <option  data-target="/development.html">Other</option>
+      
+    </select>
+  </li>
+  <li>
+    <select class="jump-to-select" onchange="navigateToSelected(this)">
+      
+        <option  selected data-target="/dataloader/overview.html">Overview</option>
+      
+        <option  data-target="/dataloader/sources.html">Sources</option>
+      
+        <option  data-target="/dataloader/dataloader.html">Dataloader</option>
+      
+        <option  data-target="/dataloader/adopting.html">Dataloader vs. GraphQL-Batch</option>
+      
+        <option  data-target="/dataloader/testing.html">Testing</option>
+      
+        <option  data-target="/dataloader/nonblocking.html">Non-Blocking Data Loading for GraphQL</option>
+      
+    </select>
+  </li>
+</ul>
 
-  <div class="experimental-header">
-    <p>
-      <strong>⚠ Experimental ⚠</strong>
-    </p>
-    <p>
-      This feature may get big changes in future releases.
-      Check the <a href="https://github.com/rmosolgo/graphql-ruby/blob/master/CHANGELOG.md">changelog</a> for update notes.
-    </p>
-  </div>
 
 
 <h1 class="guide-header">Overview</h1>
+<div class="guide-table-of-contents"><div class="table-of-contents">
+  <h3 class="contents-header">Contents</h3>
+  <ul class="contents-list">
+    <li class='contents-entry entry-depth-2'>
+                <span class='section-count'>1. </span><a href='#batch-loading'>Batch Loading
+</a>
+              </li>
+<li class='contents-entry entry-depth-2'>
+                <span class='section-count'>2. </span><a href='#fibers'>Fibers
+</a>
+              </li>
+<li class='contents-entry entry-depth-2'>
+                <span class='section-count'>3. </span><a href='#getting-started'>Getting Started
+</a>
+              </li>
+<li class='contents-entry entry-depth-3'>
+                <span class='section-count'></span><a href='#-loads-and-object-from-id'><code>loads:</code> and <code>object_from_id</code>
+</a>
+              </li>
+<li class='contents-entry entry-depth-2'>
+                <span class='section-count'>4. </span><a href='#data-sources'>Data Sources
+</a>
+              </li>
+  </ul>
+</div>
+</div>
 <div class="guide-container">
-  <p>GraphQL-Ruby 1.12 includes <a href="/api-doc/1.12.16/GraphQL/Dataloader" target="_blank" title="API docs for GraphQL::Dataloader"><code>GraphQL::Dataloader</code></a>, a module for managing efficient database access in a way that’s transparent to application code, backed by Ruby’s <code class="language-plaintext highlighter-rouge">Fiber</code> concurrency primitive.</p>
+  <p>GraphQL-Ruby 1.12+ includes <a href="/api-doc/2.0.2/GraphQL/Dataloader" target="_blank" title="API docs for GraphQL::Dataloader"><code>GraphQL::Dataloader</code></a>, a module for managing efficient database access in a way that’s transparent to application code, backed by Ruby’s <code class="language-plaintext highlighter-rouge">Fiber</code> concurrency primitive. It also <a href="/dataloader/nonblocking">supports Ruby 3’s non-blocking fibers</a>.</p>
 
 <p><code class="language-plaintext highlighter-rouge">GraphQL::Dataloader</code> is inspired by <a href="https://github.com/bessey/graphql-fiber-test/tree/no-gem-changes"><code class="language-plaintext highlighter-rouge">@bessey</code>’s proof-of-concept</a> and <a href="https://github.com/shopify/graphql-batch">shopify/graphql-batch</a>.</p>
 
@@ -88,9 +166,11 @@
 
 <p>Whenever <code class="language-plaintext highlighter-rouge">GraphQL::Dataloader</code> creates a new <code class="language-plaintext highlighter-rouge">Fiber</code>, it copies each pair from <code class="language-plaintext highlighter-rouge">Thread.current[...]</code> and reassigns them inside the new <code class="language-plaintext highlighter-rouge">Fiber</code>.</p>
 
+<p>See <a href="/dataloader/nonblocking">Non-Blocking</a> for information about using Ruby 3’s non-blocking Fibers.</p>
+
 <h2 id="getting-started">Getting Started</h2>
 
-<p>To install <a href="/api-doc/1.12.16/GraphQL/Dataloader" target="_blank" title="API docs for GraphQL::Dataloader"><code>GraphQL::Dataloader</code></a>, add it to your schema with <code class="language-plaintext highlighter-rouge">use ...</code>, for example:</p>
+<p>To install <a href="/api-doc/2.0.2/GraphQL/Dataloader" target="_blank" title="API docs for GraphQL::Dataloader"><code>GraphQL::Dataloader</code></a>, add it to your schema with <code class="language-plaintext highlighter-rouge">use ...</code>, for example:</p>
 
 <div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">MySchema</span> <span class="o">&lt;</span> <span class="no">GraphQL</span><span class="o">::</span><span class="no">Schema</span>
   <span class="c1"># ...</span>
@@ -100,8 +180,8 @@
 
 <p>Then, inside your schema, you can request batch-loaded objects by their lookup key with <code class="language-plaintext highlighter-rouge">dataloader.with(...).load(...)</code>:</p>
 
-<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">field</span> <span class="ss">:user</span><span class="p">,</span> <span class="no">Types</span><span class="o">::</span><span class="no">User</span><span class="p">,</span> <span class="ss">null: </span><span class="kp">true</span> <span class="k">do</span>
-  <span class="n">argument</span> <span class="ss">:handle</span><span class="p">,</span> <span class="no">String</span><span class="p">,</span> <span class="ss">required: </span><span class="kp">true</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">field</span> <span class="ss">:user</span><span class="p">,</span> <span class="no">Types</span><span class="o">::</span><span class="no">User</span> <span class="k">do</span>
+  <span class="n">argument</span> <span class="ss">:handle</span><span class="p">,</span> <span class="no">String</span>
 <span class="k">end</span>
 
 <span class="k">def</span> <span class="nf">user</span><span class="p">(</span><span class="n">handle</span><span class="p">:)</span>
@@ -112,8 +192,8 @@
 <p>Or, load several objects by passing an array of lookup keys to <code class="language-plaintext highlighter-rouge">.load_all(...)</code>:</p>
 
 <div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">field</span> <span class="ss">:is_following</span><span class="p">,</span> <span class="no">Boolean</span><span class="p">,</span> <span class="ss">null: </span><span class="kp">false</span> <span class="k">do</span>
-  <span class="n">argument</span> <span class="ss">:follower_handle</span><span class="p">,</span> <span class="no">String</span><span class="p">,</span> <span class="ss">required: </span><span class="kp">true</span>
-  <span class="n">argument</span> <span class="ss">:followed_handle</span><span class="p">,</span> <span class="no">String</span><span class="p">,</span> <span class="ss">required: </span><span class="kp">true</span>
+  <span class="n">argument</span> <span class="ss">:follower_handle</span><span class="p">,</span> <span class="no">String</span>
+  <span class="n">argument</span> <span class="ss">:followed_handle</span><span class="p">,</span> <span class="no">String</span>
 <span class="k">end</span>
 
 <span class="k">def</span> <span class="nf">is_following</span><span class="p">(</span><span class="n">follower_handle</span><span class="p">:,</span> <span class="n">followed_handle</span><span class="p">:)</span>
@@ -128,10 +208,10 @@
 <p>To prepare requests from several sources, use <code class="language-plaintext highlighter-rouge">.request(...)</code>, then call <code class="language-plaintext highlighter-rouge">.load</code> after all requests are registered:</p>
 
 <div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">AddToList</span> <span class="o">&lt;</span> <span class="no">GraphQL</span><span class="o">::</span><span class="no">Schema</span><span class="o">::</span><span class="no">Mutation</span>
-  <span class="n">argument</span> <span class="ss">:handle</span><span class="p">,</span> <span class="no">String</span><span class="p">,</span> <span class="ss">required: </span><span class="kp">true</span>
-  <span class="n">argument</span> <span class="ss">:list</span><span class="p">,</span> <span class="no">String</span><span class="p">,</span> <span class="ss">required: </span><span class="kp">true</span><span class="p">,</span> <span class="ss">as: :list_name</span>
+  <span class="n">argument</span> <span class="ss">:handle</span><span class="p">,</span> <span class="no">String</span>
+  <span class="n">argument</span> <span class="ss">:list</span><span class="p">,</span> <span class="no">String</span><span class="p">,</span> <span class="ss">as: :list_name</span>
 
-  <span class="n">field</span> <span class="ss">:list</span><span class="p">,</span> <span class="no">Types</span><span class="o">::</span><span class="no">UserList</span><span class="p">,</span> <span class="ss">null: </span><span class="kp">true</span>
+  <span class="n">field</span> <span class="ss">:list</span><span class="p">,</span> <span class="no">Types</span><span class="o">::</span><span class="no">UserList</span>
 
   <span class="k">def</span> <span class="nf">resolve</span><span class="p">(</span><span class="n">handle</span><span class="p">:,</span> <span class="n">list_name</span><span class="p">:)</span>
     <span class="c1"># first, register the requests:</span>
@@ -162,9 +242,9 @@
 <p>Then, any arguments with <code class="language-plaintext highlighter-rouge">loads:</code> will use that method to fetch objects. For example:</p>
 
 <div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">FollowUser</span> <span class="o">&lt;</span> <span class="no">GraphQL</span><span class="o">::</span><span class="no">Schema</span><span class="o">::</span><span class="no">Mutation</span>
-  <span class="n">argument</span> <span class="ss">:follow_id</span><span class="p">,</span> <span class="no">ID</span><span class="p">,</span> <span class="ss">required: </span><span class="kp">true</span><span class="p">,</span> <span class="ss">loads: </span><span class="no">Types</span><span class="o">::</span><span class="no">User</span>
+  <span class="n">argument</span> <span class="ss">:follow_id</span><span class="p">,</span> <span class="no">ID</span><span class="p">,</span> <span class="ss">loads: </span><span class="no">Types</span><span class="o">::</span><span class="no">User</span>
 
-  <span class="n">field</span> <span class="ss">:followed</span><span class="p">,</span> <span class="no">Types</span><span class="o">::</span><span class="no">User</span><span class="p">,</span> <span class="ss">null: </span><span class="kp">true</span>
+  <span class="n">field</span> <span class="ss">:followed</span><span class="p">,</span> <span class="no">Types</span><span class="o">::</span><span class="no">User</span>
 
   <span class="k">def</span> <span class="nf">resolve</span><span class="p">(</span><span class="n">follow</span><span class="p">:)</span>
     <span class="c1"># `follow` was fetched using the Schema's `object_from_id` hook</span>
@@ -199,6 +279,10 @@
       header.textContent = "";
       header.appendChild(headerLink);
     }
+  }
+  function navigateToSelected(selectElement) {
+    var nextPage = selectElement.selectedOptions[0].dataset["target"]
+    document.location = nextPage
   }
 </script>
 

@@ -19,7 +19,7 @@
           </a>
           <a href="/getting_started">Get Started</a>
           <a href="/guides">Guides</a>
-          <a href="/api-doc/1.12.16/">API</a>
+          <a href="/api-doc/2.0.2/">API</a>
           <a href="https://tinyletter.com/graphql-ruby">Newsletter</a>
           <a href="https://github.com/rmosolgo/graphql-ruby">Source Code</a>
           <a href="https://graphql.pro">Upgrade to Pro</a>
@@ -37,22 +37,102 @@
       </div>
     </div>
     <div class="container">
-      <p class="breadcrumb">
-  <a href="/">GraphQL</a>
-  &raquo; <a href="/guides">Guides</a>
-   &raquo; <a href="/guides#schema-guides">Schema</a>
-  &raquo; Lazy Execution
-</p>
+      <ul class="breadcrumb">
+  <li><a href="/guides">Guides</a></li>
+  <li>
+    <select class="jump-to-select" onchange="navigateToSelected(this)">
+      
+        <option  selected data-target="/schema/definition.html">Schema</option>
+      
+        <option  data-target="/queries/executing_queries.html">Queries</option>
+      
+        <option  data-target="/type_definitions/objects.html">Type Definitions</option>
+      
+        <option  data-target="/authorization/overview.html">Authorization</option>
+      
+        <option  data-target="/fields/introduction.html">Fields</option>
+      
+        <option  data-target="/mutations/mutation_root.html">Mutations</option>
+      
+        <option  data-target="/errors/overview.html">Errors</option>
+      
+        <option  data-target="/pagination/overview.html">Pagination</option>
+      
+        <option  data-target="/relay/range_add.html">Relay</option>
+      
+        <option  data-target="/dataloader/overview.html">Dataloader</option>
+      
+        <option  data-target="/subscriptions/overview.html">Subscriptions</option>
+      
+        <option  data-target="/pro/home.html">GraphQL Pro</option>
+      
+        <option  data-target="/operation_store/overview.html">GraphQL Pro - OperationStore</option>
+      
+        <option  data-target="/defer/overview.html">GraphQL Pro - Defer</option>
+      
+        <option  data-target="/limiters/overview.html">GraphQL Enterprise - Rate Limiters</option>
+      
+        <option  data-target="/object_cache/overview.html">GraphQL Enterprise - Object Cache</option>
+      
+        <option  data-target="/changesets/overview.html">GraphQL Enterprise - Changesets</option>
+      
+        <option  data-target="/javascript_client/overview.html">JavaScript Client</option>
+      
+        <option  data-target="/language_tools/visitor.html">Language Tools</option>
+      
+        <option  data-target="/testing/overview.html">Testing</option>
+      
+        <option  data-target="/development.html">Other</option>
+      
+    </select>
+  </li>
+  <li>
+    <select class="jump-to-select" onchange="navigateToSelected(this)">
+      
+        <option  data-target="/schema/definition.html">Definition</option>
+      
+        <option  data-target="/schema/root_types.html">Root Types</option>
+      
+        <option  data-target="/schema/generators.html">Generators</option>
+      
+        <option  data-target="/schema/introspection.html">Introspection</option>
+      
+        <option  selected data-target="/schema/lazy_execution.html">Lazy Execution</option>
+      
+        <option  data-target="/schema/sdl.html">Parsing GraphQL Schema Definition Language into a Ruby Schema</option>
+      
+        <option  data-target="/schema/dynamic_types.html">Dynamic types and fields</option>
+      
+        <option  data-target="/schema/object_identification.html">Object Identification</option>
+      
+    </select>
+  </li>
+</ul>
+
 
 
 <h1 class="guide-header">Lazy Execution</h1>
+<div class="guide-table-of-contents"><div class="table-of-contents">
+  <h3 class="contents-header">Contents</h3>
+  <ul class="contents-list">
+    <li class='contents-entry entry-depth-2'>
+                <span class='section-count'>1. </span><a href='#example-batched-find'>Example: Batched Find
+</a>
+              </li>
+<li class='contents-entry entry-depth-2'>
+                <span class='section-count'>2. </span><a href='#gems-for-batching'>Gems for batching
+</a>
+              </li>
+  </ul>
+</div>
+</div>
 <div class="guide-container">
   <p>With lazy execution, you can optimize access to external services (such as databases) by making batched calls. Building a lazy loader has three steps:</p>
 
 <ul>
   <li>Define a lazy-loading class with <em>one</em> method for loading &amp; returning a value</li>
-  <li>Connect it to your schema with <a href="/api-doc/1.12.16/GraphQL/Schema#lazy_resolve-instance_method" target="_blank" title="API docs for GraphQL::Schema#lazy_resolve"><code>GraphQL::Schema#lazy_resolve</code></a></li>
-  <li>In <code class="language-plaintext highlighter-rouge">resolve</code> functions, return instances of the lazy-loading class</li>
+  <li>Connect it to your schema with <a href="/api-doc/2.0.2/GraphQL/Schema#lazy_resolve-instance_method" target="_blank" title="API docs for GraphQL::Schema#lazy_resolve"><code>GraphQL::Schema#lazy_resolve</code></a></li>
+  <li>In <code class="language-plaintext highlighter-rouge">resolve</code> methods, return instances of the lazy-loading class</li>
 </ul>
 
 <h2 id="example-batched-find">Example: Batched Find</h2>
@@ -111,7 +191,7 @@
   <li>Return lazy objects from <code class="language-plaintext highlighter-rouge">resolve</code></li>
 </ol>
 
-<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">field</span> <span class="ss">:author</span><span class="p">,</span> <span class="no">PersonType</span><span class="p">,</span> <span class="ss">null: </span><span class="kp">true</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">field</span> <span class="ss">:author</span><span class="p">,</span> <span class="no">PersonType</span>
 
 <span class="k">def</span> <span class="nf">author</span>
   <span class="no">LazyFindPerson</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="n">context</span><span class="p">,</span> <span class="n">object</span><span class="p">.</span><span class="nf">author_id</span><span class="p">)</span>
@@ -134,6 +214,7 @@
 <p>The example above is simple and has some shortcomings. Consider the following gems for a robust solution to batched resolution:</p>
 
 <ul>
+  <li><a href="/api-doc/2.0.2/GraphQL/Dataloader" target="_blank" title="API docs for GraphQL::Dataloader"><code>GraphQL::Dataloader</code></a> is a built-in, Fiber-based approach to batching. See the <a href="/dataloader/overview">Dataloader guide</a> for more information.</li>
   <li><a href="https://github.com/shopify/graphql-batch"><code class="language-plaintext highlighter-rouge">graphql-batch</code></a> provides a powerful, flexible toolkit for lazy resolution with GraphQL.</li>
   <li><a href="https://github.com/sheerun/dataloader"><code class="language-plaintext highlighter-rouge">dataloader</code></a> is more general promise-based utility for batching queries within the same thread.</li>
   <li><a href="https://github.com/exAspArk/batch-loader"><code class="language-plaintext highlighter-rouge">batch-loader</code></a> works with any Ruby code including GraphQL, no extra dependencies or primitives.</li>
@@ -160,6 +241,10 @@
       header.textContent = "";
       header.appendChild(headerLink);
     }
+  }
+  function navigateToSelected(selectElement) {
+    var nextPage = selectElement.selectedOptions[0].dataset["target"]
+    document.location = nextPage
   }
 </script>
 

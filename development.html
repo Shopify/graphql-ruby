@@ -19,7 +19,7 @@
           </a>
           <a href="/getting_started">Get Started</a>
           <a href="/guides">Guides</a>
-          <a href="/api-doc/1.12.16/">API</a>
+          <a href="/api-doc/2.0.2/">API</a>
           <a href="https://tinyletter.com/graphql-ruby">Newsletter</a>
           <a href="https://github.com/rmosolgo/graphql-ruby">Source Code</a>
           <a href="https://graphql.pro">Upgrade to Pro</a>
@@ -37,15 +37,141 @@
       </div>
     </div>
     <div class="container">
-      <p class="breadcrumb">
-  <a href="/">GraphQL</a>
-  &raquo; <a href="/guides">Guides</a>
-   &raquo; <a href="/guides#other-guides">Other</a>
-  &raquo; Development
-</p>
+      <ul class="breadcrumb">
+  <li><a href="/guides">Guides</a></li>
+  <li>
+    <select class="jump-to-select" onchange="navigateToSelected(this)">
+      
+        <option  data-target="/schema/definition.html">Schema</option>
+      
+        <option  data-target="/queries/executing_queries.html">Queries</option>
+      
+        <option  data-target="/type_definitions/objects.html">Type Definitions</option>
+      
+        <option  data-target="/authorization/overview.html">Authorization</option>
+      
+        <option  data-target="/fields/introduction.html">Fields</option>
+      
+        <option  data-target="/mutations/mutation_root.html">Mutations</option>
+      
+        <option  data-target="/errors/overview.html">Errors</option>
+      
+        <option  data-target="/pagination/overview.html">Pagination</option>
+      
+        <option  data-target="/relay/range_add.html">Relay</option>
+      
+        <option  data-target="/dataloader/overview.html">Dataloader</option>
+      
+        <option  data-target="/subscriptions/overview.html">Subscriptions</option>
+      
+        <option  data-target="/pro/home.html">GraphQL Pro</option>
+      
+        <option  data-target="/operation_store/overview.html">GraphQL Pro - OperationStore</option>
+      
+        <option  data-target="/defer/overview.html">GraphQL Pro - Defer</option>
+      
+        <option  data-target="/limiters/overview.html">GraphQL Enterprise - Rate Limiters</option>
+      
+        <option  data-target="/object_cache/overview.html">GraphQL Enterprise - Object Cache</option>
+      
+        <option  data-target="/changesets/overview.html">GraphQL Enterprise - Changesets</option>
+      
+        <option  data-target="/javascript_client/overview.html">JavaScript Client</option>
+      
+        <option  data-target="/language_tools/visitor.html">Language Tools</option>
+      
+        <option  data-target="/testing/overview.html">Testing</option>
+      
+        <option  selected data-target="/development.html">Other</option>
+      
+    </select>
+  </li>
+  <li>
+    <select class="jump-to-select" onchange="navigateToSelected(this)">
+      
+        <option  selected data-target="/development.html">Development</option>
+      
+        <option  data-target="/getting_started.html">Getting Started</option>
+      
+        <option  data-target="/related_projects.html">Related Projects</option>
+      
+    </select>
+  </li>
+</ul>
+
 
 
 <h1 class="guide-header">Development</h1>
+<div class="guide-table-of-contents"><div class="table-of-contents">
+  <h3 class="contents-header">Contents</h3>
+  <ul class="contents-list">
+    <li class='contents-entry entry-depth-2'>
+                <span class='section-count'>1. </span><a href='#setup'>Setup
+</a>
+              </li>
+<li class='contents-entry entry-depth-2'>
+                <span class='section-count'>2. </span><a href='#running-the-tests'>Running the Tests
+</a>
+              </li>
+<li class='contents-entry entry-depth-3'>
+                <span class='section-count'></span><a href='#unit-tests'>Unit tests
+</a>
+              </li>
+<li class='contents-entry entry-depth-3'>
+                <span class='section-count'></span><a href='#integration-tests'>Integration tests
+</a>
+              </li>
+<li class='contents-entry entry-depth-3'>
+                <span class='section-count'></span><a href='#other-tests'>Other tests
+</a>
+              </li>
+<li class='contents-entry entry-depth-2'>
+                <span class='section-count'>3. </span><a href='#gemfiles-gemfiles-gemfiles'>Gemfiles, Gemfiles, Gemfiles
+</a>
+              </li>
+<li class='contents-entry entry-depth-2'>
+                <span class='section-count'>4. </span><a href='#debugging-with-pry'>Debugging with Pry
+</a>
+              </li>
+<li class='contents-entry entry-depth-2'>
+                <span class='section-count'>5. </span><a href='#running-the-benchmarks'>Running the Benchmarks
+</a>
+              </li>
+<li class='contents-entry entry-depth-2'>
+                <span class='section-count'>6. </span><a href='#coding-guidelines'>Coding Guidelines
+</a>
+              </li>
+<li class='contents-entry entry-depth-2'>
+                <span class='section-count'>7. </span><a href='#lexer-and-parser'>Lexer and Parser
+</a>
+              </li>
+<li class='contents-entry entry-depth-3'>
+                <span class='section-count'></span><a href='#install-ragel-and-colm-on-a-mac'>Install Ragel and Colm on a Mac
+</a>
+              </li>
+<li class='contents-entry entry-depth-2'>
+                <span class='section-count'>8. </span><a href='#website'>Website
+</a>
+              </li>
+<li class='contents-entry entry-depth-3'>
+                <span class='section-count'></span><a href='#search-index'>Search Index
+</a>
+              </li>
+<li class='contents-entry entry-depth-3'>
+                <span class='section-count'></span><a href='#api-docs'>API Docs
+</a>
+              </li>
+<li class='contents-entry entry-depth-2'>
+                <span class='section-count'>9. </span><a href='#versioning'>Versioning
+</a>
+              </li>
+<li class='contents-entry entry-depth-2'>
+                <span class='section-count'>10. </span><a href='#releasing'>Releasing
+</a>
+              </li>
+  </ul>
+</div>
+</div>
 <div class="guide-container">
   <p>So, you want to hack on GraphQL Ruby! Here are some tips for getting started.</p>
 
@@ -61,7 +187,7 @@
   <li><a href="#releasing">Releasing</a> Gem versions</li>
 </ul>
 
-<h3 id="setup">Setup</h3>
+<h2 id="setup">Setup</h2>
 
 <p>Get your own copy of graphql-ruby by forking <a href="https://github.com/rmosolgo/graphql-ruby"><code class="language-plaintext highlighter-rouge">rmosolgo/graphql-ruby</code> on GitHub</a> and cloning your fork.</p>
 
@@ -73,9 +199,9 @@
   <li>Optional: <a href="https://www.colm.net/open-source/ragel/">Ragel</a> is required to build the lexer</li>
 </ul>
 
-<h3 id="running-the-tests">Running the Tests</h3>
+<h2 id="running-the-tests">Running the Tests</h2>
 
-<h4 id="unit-tests">Unit tests</h4>
+<h3 id="unit-tests">Unit tests</h3>
 
 <p>You can run the tests with</p>
 
@@ -105,15 +231,15 @@ bundle exec rake test   # tests only
 
 <p>(This is provided by <code class="language-plaintext highlighter-rouge">minitest-focus</code>.)</p>
 
-<h4 id="integration-tests">Integration tests</h4>
+<h3 id="integration-tests">Integration tests</h3>
 
 <p>You need to pick a specific gemfile from gemfiles/ to run integration tests. For example:</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>BUNDLE_GEMFILE=gemfiles/rails_5.1.gemfile bundle install
-BUNDLE_GEMFILE=gemfiles/rails_5.1.gemfile bundle exec rake test TEST=spec/integration/rails/graphql/relay/array_connection_spec.rb
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>BUNDLE_GEMFILE=gemfiles/rails_6.1.gemfile bundle install
+BUNDLE_GEMFILE=gemfiles/rails_6.1.gemfile bundle exec rake test TEST=spec/integration/rails/graphql/relay/array_connection_spec.rb
 </code></pre></div></div>
 
-<h4 id="other-tests">Other tests</h4>
+<h3 id="other-tests">Other tests</h3>
 
 <p>There are system tests for checking ActionCable behavior, use:</p>
 
@@ -125,14 +251,14 @@ BUNDLE_GEMFILE=gemfiles/rails_5.1.gemfile bundle exec rake test TEST=spec/integr
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>bundle exec rake test:js
 </code></pre></div></div>
 
-<h3 id="gemfiles-gemfiles-gemfiles">Gemfiles, Gemfiles, Gemfiles</h3>
+<h2 id="gemfiles-gemfiles-gemfiles">Gemfiles, Gemfiles, Gemfiles</h2>
 
 <p><code class="language-plaintext highlighter-rouge">graphql-ruby</code> has several gemfiles to ensure support for various Rails versions. You can specify a gemfile with <code class="language-plaintext highlighter-rouge">BUNDLE_GEMFILE</code>, eg:</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>BUNDLE_GEMFILE=gemfiles/rails_5.gemfile bundle exec rake test
 </code></pre></div></div>
 
-<h3 id="debugging-with-pry">Debugging with Pry</h3>
+<h2 id="debugging-with-pry">Debugging with Pry</h2>
 
 <p><a href="https://pryrepl.org/"><code class="language-plaintext highlighter-rouge">pry</code></a> is included with GraphQL-Ruby’s development setup to help with debugging.</p>
 
@@ -143,7 +269,7 @@ BUNDLE_GEMFILE=gemfiles/rails_5.1.gemfile bundle exec rake test TEST=spec/integr
 
 <p>Then, the program will pause and your terminal will become a Ruby REPL. Feel free to use <code class="language-plaintext highlighter-rouge">pry</code> in your development process!</p>
 
-<h3 id="running-the-benchmarks">Running the Benchmarks</h3>
+<h2 id="running-the-benchmarks">Running the Benchmarks</h2>
 
 <p>This project includes some Rake tasks to record benchmarks:</p>
 
@@ -170,7 +296,7 @@ rake bench:validate        <span class="c"># Benchmark validation of several que
   <li>The results are environment-specific: CPU and memory availability are affected by other processes on your computer. So try to create similar environments for your before-and-after testing.</li>
 </ul>
 
-<h3 id="coding-guidelines">Coding Guidelines</h3>
+<h2 id="coding-guidelines">Coding Guidelines</h2>
 
 <p>GraphQL-Ruby uses a thorough test suite to make sure things work reliably day-after-day. Please include tests that describe your changes, for example:</p>
 
@@ -182,7 +308,7 @@ rake bench:validate        <span class="c"># Benchmark validation of several que
 
 <p>Don’t fret about coding style or organization.  There’s a minimal Rubocop config in <code class="language-plaintext highlighter-rouge">.rubocop.yml</code> which runs during CI. You can run it manually with <code class="language-plaintext highlighter-rouge">bundle exec rake rubocop</code>.</p>
 
-<h3 id="lexer-and-parser">Lexer and Parser</h3>
+<h2 id="lexer-and-parser">Lexer and Parser</h2>
 
 <p>The lexer and parser use a multistep build process:</p>
 
@@ -196,7 +322,7 @@ rake bench:validate        <span class="c"># Benchmark validation of several que
 
 <p>You will need Ragel to build the lexer (see above).</p>
 
-<h4 id="install-ragel-and-colm-on-a-mac">Install Ragel and Colm on a Mac</h4>
+<h3 id="install-ragel-and-colm-on-a-mac">Install Ragel and Colm on a Mac</h3>
 
 <p>GraphQL Ruby requires Ragel 7.0.0.9 which is not available on Homebrew. To install it, you might have to download it from source.</p>
 
@@ -219,7 +345,7 @@ make
 make <span class="nb">install</span>
 </code></pre></div></div>
 
-<h3 id="website">Website</h3>
+<h2 id="website">Website</h2>
 
 <p>To update the website, update the <code class="language-plaintext highlighter-rouge">.md</code> files in <code class="language-plaintext highlighter-rouge">guides/</code>.</p>
 
@@ -235,7 +361,7 @@ make <span class="nb">install</span>
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>bundle exec rake site:publish
 </code></pre></div></div>
 
-<h4 id="search-index">Search Index</h4>
+<h3 id="search-index">Search Index</h3>
 
 <p>GraphQL-Ruby’s search index is powered by Algolia. To update the index, you need the API key in an environment variable:</p>
 
@@ -244,7 +370,7 @@ make <span class="nb">install</span>
 
 <p>Without this key, the search index will fall out-of-sync with the website. Contact @rmosolgo to gain access to this key.</p>
 
-<h4 id="api-docs">API Docs</h4>
+<h3 id="api-docs">API Docs</h3>
 
 <p>The GraphQL-Ruby website has its own rendered version of the gem’s API docs. They’re pushed to GitHub pages with a special process.</p>
 
@@ -266,7 +392,7 @@ make <span class="nb">install</span>
 
 <p>Finally, check your work by visiting the docs on the website.</p>
 
-<h3 id="versioning">Versioning</h3>
+<h2 id="versioning">Versioning</h2>
 
 <p>GraphQL-Ruby does <em>not</em> attempt to deliver “semantic versioning” for the reasons described in <code class="language-plaintext highlighter-rouge">jashkenas</code>’
 s post, <a href="https://gist.github.com/jashkenas/cbd2b088e20279ae2c8e">“Why Semantic Versioning Isn’t”</a>. Instead, the following scheme is used as a guideline:</p>
@@ -284,7 +410,7 @@ s post, <a href="https://gist.github.com/jashkenas/cbd2b088e20279ae2c8e">“Why 
 
 <p>The <a href="https://github.com/rmosolgo/graphql-ruby/blob/master/CHANGELOG.md">changelog</a> should always contain accurate and thorough information so that users can upgrade. If you have trouble upgrading based on the changelog, please open an issue on GitHub.</p>
 
-<h3 id="releasing">Releasing</h3>
+<h2 id="releasing">Releasing</h2>
 
 <p>GraphQL-Ruby doesn’t have a strict release schedule. If you think it should, consider opening an issue to share your thoughts.</p>
 
@@ -297,7 +423,7 @@ s post, <a href="https://gist.github.com/jashkenas/cbd2b088e20279ae2c8e">“Why 
       <li>Open the GitHub milestone corresponding to the new version</li>
       <li>Check each pull request and put it in the category (or categories) that it belongs in
         <ul>
-          <li>If a change affects the default behavior of GraphQL-Ruby in a disruptive way, add it to <code class="language-plaintext highlighter-rouge">### Breaking Changes</code> and include migration notes if possible</li>
+          <li>If a change affects the default behavior of GraphQL-Ruby in a disruptive way, add it to <code class="language-plaintext highlighter-rouge">## Breaking Changes</code> and include migration notes if possible</li>
           <li>Include the PR number beside the change description for future reference</li>
         </ul>
       </li>
@@ -305,18 +431,8 @@ s post, <a href="https://gist.github.com/jashkenas/cbd2b088e20279ae2c8e">“Why 
   </li>
   <li>Update <code class="language-plaintext highlighter-rouge">lib/graphql/version.rb</code> with the new version number</li>
   <li>Commit changes to master</li>
-  <li>Release to RubyGems
-    <ul>
-      <li>Without 2FA 😢: <code class="language-plaintext highlighter-rouge">bundle exec rake release</code></li>
-      <li>With 2FA 😎: <code class="language-plaintext highlighter-rouge">bundle exec rake build</code> then <code class="language-plaintext highlighter-rouge">gem push pkg/graphql-&lt;version&gt;.gem</code>, <code class="language-plaintext highlighter-rouge">git tag v&lt;version&gt; &amp;&amp; git push v&lt;version&gt;</code></li>
-    </ul>
-  </li>
-  <li>Update the website:
-    <ul>
-      <li>Generate new API docs with <code class="language-plaintext highlighter-rouge">bundle exec rake apidocs:gen_version[&lt;your.version.number&gt;]</code></li>
-      <li>Push them to the website with <code class="language-plaintext highlighter-rouge">bundle exec rake site:publish</code></li>
-    </ul>
-  </li>
+  <li>Push changes to GitHub: <code class="language-plaintext highlighter-rouge">git push origin master</code>. GitHub Actions will update the website.</li>
+  <li>Release to RubyGems: <code class="language-plaintext highlighter-rouge">bundle exec rake release</code>. This will also push the tag to GitHub which will kick off a GitHub Actions job to update the API docs.</li>
   <li>Celebrate 🎊  !</li>
 </ul>
 
@@ -341,6 +457,10 @@ s post, <a href="https://gist.github.com/jashkenas/cbd2b088e20279ae2c8e">“Why 
       header.textContent = "";
       header.appendChild(headerLink);
     }
+  }
+  function navigateToSelected(selectElement) {
+    var nextPage = selectElement.selectedOptions[0].dataset["target"]
+    document.location = nextPage
   }
 </script>
 

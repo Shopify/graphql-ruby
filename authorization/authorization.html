@@ -19,7 +19,7 @@
           </a>
           <a href="/getting_started">Get Started</a>
           <a href="/guides">Guides</a>
-          <a href="/api-doc/1.12.16/">API</a>
+          <a href="/api-doc/2.0.2/">API</a>
           <a href="https://tinyletter.com/graphql-ruby">Newsletter</a>
           <a href="https://github.com/rmosolgo/graphql-ruby">Source Code</a>
           <a href="https://graphql.pro">Upgrade to Pro</a>
@@ -37,15 +37,103 @@
       </div>
     </div>
     <div class="container">
-      <p class="breadcrumb">
-  <a href="/">GraphQL</a>
-  &raquo; <a href="/guides">Guides</a>
-   &raquo; <a href="/guides#authorization-guides">Authorization</a>
-  &raquo; Authorization
-</p>
+      <ul class="breadcrumb">
+  <li><a href="/guides">Guides</a></li>
+  <li>
+    <select class="jump-to-select" onchange="navigateToSelected(this)">
+      
+        <option  data-target="/schema/definition.html">Schema</option>
+      
+        <option  data-target="/queries/executing_queries.html">Queries</option>
+      
+        <option  data-target="/type_definitions/objects.html">Type Definitions</option>
+      
+        <option  selected data-target="/authorization/overview.html">Authorization</option>
+      
+        <option  data-target="/fields/introduction.html">Fields</option>
+      
+        <option  data-target="/mutations/mutation_root.html">Mutations</option>
+      
+        <option  data-target="/errors/overview.html">Errors</option>
+      
+        <option  data-target="/pagination/overview.html">Pagination</option>
+      
+        <option  data-target="/relay/range_add.html">Relay</option>
+      
+        <option  data-target="/dataloader/overview.html">Dataloader</option>
+      
+        <option  data-target="/subscriptions/overview.html">Subscriptions</option>
+      
+        <option  data-target="/pro/home.html">GraphQL Pro</option>
+      
+        <option  data-target="/operation_store/overview.html">GraphQL Pro - OperationStore</option>
+      
+        <option  data-target="/defer/overview.html">GraphQL Pro - Defer</option>
+      
+        <option  data-target="/limiters/overview.html">GraphQL Enterprise - Rate Limiters</option>
+      
+        <option  data-target="/object_cache/overview.html">GraphQL Enterprise - Object Cache</option>
+      
+        <option  data-target="/changesets/overview.html">GraphQL Enterprise - Changesets</option>
+      
+        <option  data-target="/javascript_client/overview.html">JavaScript Client</option>
+      
+        <option  data-target="/language_tools/visitor.html">Language Tools</option>
+      
+        <option  data-target="/testing/overview.html">Testing</option>
+      
+        <option  data-target="/development.html">Other</option>
+      
+    </select>
+  </li>
+  <li>
+    <select class="jump-to-select" onchange="navigateToSelected(this)">
+      
+        <option  data-target="/authorization/overview.html">Overview</option>
+      
+        <option  data-target="/authorization/visibility.html">Visibility</option>
+      
+        <option  selected data-target="/authorization/authorization.html">Authorization</option>
+      
+        <option  data-target="/authorization/can_can_integration.html">CanCan Integration</option>
+      
+        <option  data-target="/authorization/pundit_integration.html">Pundit Integration</option>
+      
+        <option  data-target="/authorization/scoping.html">Scoping</option>
+      
+    </select>
+  </li>
+</ul>
+
 
 
 <h1 class="guide-header">Authorization</h1>
+<div class="guide-table-of-contents"><div class="table-of-contents">
+  <h3 class="contents-header">Contents</h3>
+  <ul class="contents-list">
+    <li class='contents-entry entry-depth-2'>
+                <span class='section-count'>1. </span><a href='#adding-authorization-checks'>Adding Authorization Checks
+</a>
+              </li>
+<li class='contents-entry entry-depth-4'>
+                <span class='section-count'></span><a href='#object-authorization'>Object Authorization
+</a>
+              </li>
+<li class='contents-entry entry-depth-4'>
+                <span class='section-count'></span><a href='#field-authorization'>Field Authorization
+</a>
+              </li>
+<li class='contents-entry entry-depth-4'>
+                <span class='section-count'></span><a href='#argument-authorization'>Argument Authorization
+</a>
+              </li>
+<li class='contents-entry entry-depth-2'>
+                <span class='section-count'>2. </span><a href='#handling-unauthorized-objects'>Handling Unauthorized Objects
+</a>
+              </li>
+  </ul>
+</div>
+</div>
 <div class="guide-container">
   <p>While a query is running, you can check each object to see whether the current user is authorized to interact with that object. If the user is <em>not</em> authorized, you can handle the case with an error.</p>
 
@@ -90,7 +178,7 @@
 
 <div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Types::BaseField</span> <span class="o">&lt;</span> <span class="no">GraphQL</span><span class="o">::</span><span class="no">Schema</span><span class="o">::</span><span class="no">Field</span>
   <span class="c1"># Pass `field ..., require_admin: true` to reject non-admin users from a given field</span>
-  <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span> <span class="ss">require_admin: </span><span class="kp">false</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">block</span><span class="p">)</span>
+  <span class="k">def</span> <span class="nf">initialize</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="ss">require_admin: </span><span class="kp">false</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">block</span><span class="p">)</span>
     <span class="vi">@require_admin</span> <span class="o">=</span> <span class="n">require_admin</span>
     <span class="k">super</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">block</span><span class="p">)</span>
   <span class="k">end</span>
@@ -128,7 +216,7 @@
 
 <h2 id="handling-unauthorized-objects">Handling Unauthorized Objects</h2>
 
-<p>By default, GraphQL-Ruby silently replaces unauthorized objects with <code class="language-plaintext highlighter-rouge">nil</code>, as if they didn’t exist. You can customize this behavior by implementing <a href="/api-doc/1.12.16/GraphQL/Schema#unauthorized_object-class_method" target="_blank" title="API docs for GraphQL::Schema.unauthorized_object"><code>Schema.unauthorized_object</code></a> in your schema class, for example:</p>
+<p>By default, GraphQL-Ruby silently replaces unauthorized objects with <code class="language-plaintext highlighter-rouge">nil</code>, as if they didn’t exist. You can customize this behavior by implementing <a href="/api-doc/2.0.2/GraphQL/Schema#unauthorized_object-class_method" target="_blank" title="API docs for GraphQL::Schema.unauthorized_object"><code>Schema.unauthorized_object</code></a> in your schema class, for example:</p>
 
 <div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">MySchema</span> <span class="o">&lt;</span> <span class="no">GraphQL</span><span class="o">::</span><span class="no">Schema</span>
   <span class="c1"># Override this hook to handle cases when `authorized?` returns false for an object:</span>
@@ -175,6 +263,10 @@
       header.textContent = "";
       header.appendChild(headerLink);
     }
+  }
+  function navigateToSelected(selectElement) {
+    var nextPage = selectElement.selectedOptions[0].dataset["target"]
+    document.location = nextPage
   }
 </script>
 

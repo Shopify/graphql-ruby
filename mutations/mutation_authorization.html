@@ -19,7 +19,7 @@
           </a>
           <a href="/getting_started">Get Started</a>
           <a href="/guides">Guides</a>
-          <a href="/api-doc/1.12.16/">API</a>
+          <a href="/api-doc/2.0.2/">API</a>
           <a href="https://tinyletter.com/graphql-ruby">Newsletter</a>
           <a href="https://github.com/rmosolgo/graphql-ruby">Source Code</a>
           <a href="https://graphql.pro">Upgrade to Pro</a>
@@ -37,15 +37,99 @@
       </div>
     </div>
     <div class="container">
-      <p class="breadcrumb">
-  <a href="/">GraphQL</a>
-  &raquo; <a href="/guides">Guides</a>
-   &raquo; <a href="/guides#mutations-guides">Mutations</a>
-  &raquo; Mutation authorization
-</p>
+      <ul class="breadcrumb">
+  <li><a href="/guides">Guides</a></li>
+  <li>
+    <select class="jump-to-select" onchange="navigateToSelected(this)">
+      
+        <option  data-target="/schema/definition.html">Schema</option>
+      
+        <option  data-target="/queries/executing_queries.html">Queries</option>
+      
+        <option  data-target="/type_definitions/objects.html">Type Definitions</option>
+      
+        <option  data-target="/authorization/overview.html">Authorization</option>
+      
+        <option  data-target="/fields/introduction.html">Fields</option>
+      
+        <option  selected data-target="/mutations/mutation_root.html">Mutations</option>
+      
+        <option  data-target="/errors/overview.html">Errors</option>
+      
+        <option  data-target="/pagination/overview.html">Pagination</option>
+      
+        <option  data-target="/relay/range_add.html">Relay</option>
+      
+        <option  data-target="/dataloader/overview.html">Dataloader</option>
+      
+        <option  data-target="/subscriptions/overview.html">Subscriptions</option>
+      
+        <option  data-target="/pro/home.html">GraphQL Pro</option>
+      
+        <option  data-target="/operation_store/overview.html">GraphQL Pro - OperationStore</option>
+      
+        <option  data-target="/defer/overview.html">GraphQL Pro - Defer</option>
+      
+        <option  data-target="/limiters/overview.html">GraphQL Enterprise - Rate Limiters</option>
+      
+        <option  data-target="/object_cache/overview.html">GraphQL Enterprise - Object Cache</option>
+      
+        <option  data-target="/changesets/overview.html">GraphQL Enterprise - Changesets</option>
+      
+        <option  data-target="/javascript_client/overview.html">JavaScript Client</option>
+      
+        <option  data-target="/language_tools/visitor.html">Language Tools</option>
+      
+        <option  data-target="/testing/overview.html">Testing</option>
+      
+        <option  data-target="/development.html">Other</option>
+      
+    </select>
+  </li>
+  <li>
+    <select class="jump-to-select" onchange="navigateToSelected(this)">
+      
+        <option  data-target="/mutations/mutation_root.html">Mutation Root</option>
+      
+        <option  data-target="/mutations/mutation_classes.html">Mutation Classes</option>
+      
+        <option  data-target="/mutations/mutation_errors.html">Mutation errors</option>
+      
+        <option  selected data-target="/mutations/mutation_authorization.html">Mutation authorization</option>
+      
+    </select>
+  </li>
+</ul>
+
 
 
 <h1 class="guide-header">Mutation authorization</h1>
+<div class="guide-table-of-contents"><div class="table-of-contents">
+  <h3 class="contents-header">Contents</h3>
+  <ul class="contents-list">
+    <li class='contents-entry entry-depth-2'>
+                <span class='section-count'>1. </span><a href='#checking-the-user-permissions'>Checking the user permissions
+</a>
+              </li>
+<li class='contents-entry entry-depth-2'>
+                <span class='section-count'>2. </span><a href='#loading-and-authorizing-objects'>Loading and authorizing objects
+</a>
+              </li>
+<li class='contents-entry entry-depth-2'>
+                <span class='section-count'>3. </span><a href='#can-this-user-perform-this-action'>Can <em>this user</em> perform <em>this action</em>?
+</a>
+              </li>
+<li class='contents-entry entry-depth-4'>
+                <span class='section-count'></span><a href='#adding-errors'>Adding errors
+</a>
+              </li>
+<li class='contents-entry entry-depth-2'>
+                <span class='section-count'>4. </span><a href='#finally-doing-the-work'>Finally, doing the work
+</a>
+              </li>
+  </ul>
+</div>
+</div>
 <div class="guide-container">
   <p>Before running a mutation, you probably want to do a few things:</p>
 
@@ -100,7 +184,7 @@
 
 <div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Mutations::PromoteEmployee</span> <span class="o">&lt;</span> <span class="no">Mutations</span><span class="o">::</span><span class="no">BaseMutation</span>
   <span class="c1"># `employeeId` is an ID, Types::Employee is an _Object_ type</span>
-  <span class="n">argument</span> <span class="ss">:employee_id</span><span class="p">,</span> <span class="no">ID</span><span class="p">,</span> <span class="ss">required: </span><span class="kp">true</span><span class="p">,</span> <span class="ss">loads: </span><span class="no">Types</span><span class="o">::</span><span class="no">Employee</span>
+  <span class="n">argument</span> <span class="ss">:employee_id</span><span class="p">,</span> <span class="no">ID</span><span class="p">,</span> <span class="ss">loads: </span><span class="no">Types</span><span class="o">::</span><span class="no">Employee</span>
 
   <span class="c1"># Behind the scenes, `:employee_id` is used to fetch an object from the database,</span>
   <span class="c1"># then the object is authorized with `Employee.authorized?`, then</span>
@@ -115,8 +199,8 @@
 
 <ul>
   <li>Automatically remove <code class="language-plaintext highlighter-rouge">_id</code> from the name and pass that name for the <code class="language-plaintext highlighter-rouge">as:</code> option</li>
-  <li>Add a prepare hook to fetch an object with the given <code class="language-plaintext highlighter-rouge">ID</code> (using <a href="/api-doc/1.12.16/GraphQL/Schema#object_from_id-class_method" target="_blank" title="API docs for GraphQL::Schema.object_from_id"><code>Schema.object_from_id</code></a>)</li>
-  <li>Check that the fetched object’s type matches the <code class="language-plaintext highlighter-rouge">loads:</code> type (using <a href="/api-doc/1.12.16/GraphQL/Schema#resolve_type-class_method" target="_blank" title="API docs for GraphQL::Schema.resolve_type"><code>Schema.resolve_type</code></a>)</li>
+  <li>Add a prepare hook to fetch an object with the given <code class="language-plaintext highlighter-rouge">ID</code> (using <a href="/api-doc/2.0.2/GraphQL/Schema#object_from_id-class_method" target="_blank" title="API docs for GraphQL::Schema.object_from_id"><code>Schema.object_from_id</code></a>)</li>
+  <li>Check that the fetched object’s type matches the <code class="language-plaintext highlighter-rouge">loads:</code> type (using <a href="/api-doc/2.0.2/GraphQL/Schema#resolve_type-class_method" target="_blank" title="API docs for GraphQL::Schema.resolve_type"><code>Schema.resolve_type</code></a>)</li>
   <li>Run the fetched object through its type’s <code class="language-plaintext highlighter-rouge">.authorized?</code> hook (see <a href="/authorization/authorization">Authorization</a>)</li>
   <li>Inject it into <code class="language-plaintext highlighter-rouge">#resolve</code> using the object-style name (<code class="language-plaintext highlighter-rouge">employee:</code>)</li>
 </ul>
@@ -125,7 +209,7 @@
 
 <p>Alternatively if your <code class="language-plaintext highlighter-rouge">ID</code> doesn’t specify both class <em>and</em> id, resolvers have a <code class="language-plaintext highlighter-rouge">load_#{argument}</code> method that can be overridden.</p>
 
-<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">argument</span> <span class="ss">:employee_id</span><span class="p">,</span> <span class="no">ID</span><span class="p">,</span> <span class="ss">required: </span><span class="kp">true</span><span class="p">,</span> <span class="ss">loads: </span><span class="no">Types</span><span class="o">::</span><span class="no">Employee</span>
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">argument</span> <span class="ss">:employee_id</span><span class="p">,</span> <span class="no">ID</span><span class="p">,</span> <span class="ss">loads: </span><span class="no">Types</span><span class="o">::</span><span class="no">Employee</span>
 
 <span class="k">def</span> <span class="nf">load_employee</span><span class="p">(</span><span class="nb">id</span><span class="p">)</span>
   <span class="o">::</span><span class="no">Employee</span><span class="p">.</span><span class="nf">find</span><span class="p">(</span><span class="nb">id</span><span class="p">)</span>
@@ -135,7 +219,7 @@
 <p>If you don’t want this behavior, don’t use it. Instead, create arguments with type <code class="language-plaintext highlighter-rouge">ID</code> and use them your own way, for example:</p>
 
 <div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># No special loading behavior:</span>
-<span class="n">argument</span> <span class="ss">:employee_id</span><span class="p">,</span> <span class="no">ID</span><span class="p">,</span> <span class="ss">required: </span><span class="kp">true</span>
+<span class="n">argument</span> <span class="ss">:employee_id</span><span class="p">,</span> <span class="no">ID</span>
 </code></pre></div></div>
 
 <h2 id="can-this-user-perform-this-action">Can <em>this user</em> perform <em>this action</em>?</h2>
@@ -214,6 +298,10 @@
       header.textContent = "";
       header.appendChild(headerLink);
     }
+  }
+  function navigateToSelected(selectElement) {
+    var nextPage = selectElement.selectedOptions[0].dataset["target"]
+    document.location = nextPage
   }
 </script>
 

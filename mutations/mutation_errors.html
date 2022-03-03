@@ -19,7 +19,7 @@
           </a>
           <a href="/getting_started">Get Started</a>
           <a href="/guides">Guides</a>
-          <a href="/api-doc/1.12.16/">API</a>
+          <a href="/api-doc/2.0.2/">API</a>
           <a href="https://tinyletter.com/graphql-ruby">Newsletter</a>
           <a href="https://github.com/rmosolgo/graphql-ruby">Source Code</a>
           <a href="https://graphql.pro">Upgrade to Pro</a>
@@ -37,15 +37,91 @@
       </div>
     </div>
     <div class="container">
-      <p class="breadcrumb">
-  <a href="/">GraphQL</a>
-  &raquo; <a href="/guides">Guides</a>
-   &raquo; <a href="/guides#mutations-guides">Mutations</a>
-  &raquo; Mutation errors
-</p>
+      <ul class="breadcrumb">
+  <li><a href="/guides">Guides</a></li>
+  <li>
+    <select class="jump-to-select" onchange="navigateToSelected(this)">
+      
+        <option  data-target="/schema/definition.html">Schema</option>
+      
+        <option  data-target="/queries/executing_queries.html">Queries</option>
+      
+        <option  data-target="/type_definitions/objects.html">Type Definitions</option>
+      
+        <option  data-target="/authorization/overview.html">Authorization</option>
+      
+        <option  data-target="/fields/introduction.html">Fields</option>
+      
+        <option  selected data-target="/mutations/mutation_root.html">Mutations</option>
+      
+        <option  data-target="/errors/overview.html">Errors</option>
+      
+        <option  data-target="/pagination/overview.html">Pagination</option>
+      
+        <option  data-target="/relay/range_add.html">Relay</option>
+      
+        <option  data-target="/dataloader/overview.html">Dataloader</option>
+      
+        <option  data-target="/subscriptions/overview.html">Subscriptions</option>
+      
+        <option  data-target="/pro/home.html">GraphQL Pro</option>
+      
+        <option  data-target="/operation_store/overview.html">GraphQL Pro - OperationStore</option>
+      
+        <option  data-target="/defer/overview.html">GraphQL Pro - Defer</option>
+      
+        <option  data-target="/limiters/overview.html">GraphQL Enterprise - Rate Limiters</option>
+      
+        <option  data-target="/object_cache/overview.html">GraphQL Enterprise - Object Cache</option>
+      
+        <option  data-target="/changesets/overview.html">GraphQL Enterprise - Changesets</option>
+      
+        <option  data-target="/javascript_client/overview.html">JavaScript Client</option>
+      
+        <option  data-target="/language_tools/visitor.html">Language Tools</option>
+      
+        <option  data-target="/testing/overview.html">Testing</option>
+      
+        <option  data-target="/development.html">Other</option>
+      
+    </select>
+  </li>
+  <li>
+    <select class="jump-to-select" onchange="navigateToSelected(this)">
+      
+        <option  data-target="/mutations/mutation_root.html">Mutation Root</option>
+      
+        <option  data-target="/mutations/mutation_classes.html">Mutation Classes</option>
+      
+        <option  selected data-target="/mutations/mutation_errors.html">Mutation errors</option>
+      
+        <option  data-target="/mutations/mutation_authorization.html">Mutation authorization</option>
+      
+    </select>
+  </li>
+</ul>
+
 
 
 <h1 class="guide-header">Mutation errors</h1>
+<div class="guide-table-of-contents"><div class="table-of-contents">
+  <h3 class="contents-header">Contents</h3>
+  <ul class="contents-list">
+    <li class='contents-entry entry-depth-2'>
+                <span class='section-count'>1. </span><a href='#raising-errors'>Raising Errors
+</a>
+              </li>
+<li class='contents-entry entry-depth-2'>
+                <span class='section-count'>2. </span><a href='#errors-as-data'>Errors as Data
+</a>
+              </li>
+<li class='contents-entry entry-depth-2'>
+                <span class='section-count'>3. </span><a href='#nullable-mutation-payload-fields'>Nullable Mutation Payload Fields
+</a>
+              </li>
+  </ul>
+</div>
+</div>
 <div class="guide-container">
   <p>How can you handle errors inside mutations? Let’s explore a couple of options.</p>
 
@@ -82,7 +158,7 @@
 
   <span class="n">field</span> <span class="ss">:message</span><span class="p">,</span> <span class="no">String</span><span class="p">,</span> <span class="ss">null: </span><span class="kp">false</span><span class="p">,</span>
     <span class="ss">description: </span><span class="s2">"A description of the error"</span>
-  <span class="n">field</span> <span class="ss">:path</span><span class="p">,</span> <span class="p">[</span><span class="no">String</span><span class="p">],</span> <span class="ss">null: </span><span class="kp">true</span><span class="p">,</span>
+  <span class="n">field</span> <span class="ss">:path</span><span class="p">,</span> <span class="p">[</span><span class="no">String</span><span class="p">],</span>
     <span class="ss">description: </span><span class="s2">"Which input value this error came from"</span>
 <span class="k">end</span>
 </code></pre></div></div>
@@ -161,19 +237,19 @@
 
 <h2 id="nullable-mutation-payload-fields">Nullable Mutation Payload Fields</h2>
 
-<p>To benefit from “Errors as Data” described above, mutation fields must have <code class="language-plaintext highlighter-rouge">null: true</code>. Why?</p>
+<p>To benefit from “Errors as Data” described above, mutation fields must not have <code class="language-plaintext highlighter-rouge">null: false</code>. Why?</p>
 
 <p>Well, for <em>non-null</em> fields (which have <code class="language-plaintext highlighter-rouge">null: false</code>), if they return <code class="language-plaintext highlighter-rouge">nil</code>, then GraphQL aborts the query and removes those fields from the response altogether.</p>
 
 <p>In mutations, when errors happen, the other fields may return <code class="language-plaintext highlighter-rouge">nil</code>. So, if those other fields have <code class="language-plaintext highlighter-rouge">null: false</code>, but they return <code class="language-plaintext highlighter-rouge">nil</code>, the GraphQL will panic and remove the whole mutation from the response, <em>including</em> the errors!</p>
 
-<p>In order to have the rich error data, even when other fields are <code class="language-plaintext highlighter-rouge">nil</code>, those fields must have <code class="language-plaintext highlighter-rouge">null: true</code> so that the type system can be obeyed when errors happen.</p>
+<p>In order to have the rich error data, even when other fields are <code class="language-plaintext highlighter-rouge">nil</code>, those fields must have <code class="language-plaintext highlighter-rouge">null: true</code> (which is the default) so that the type system can be obeyed when errors happen.</p>
 
 <p>Here’s an example of a nullable field (good!):</p>
 
 <div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">Mutations::UpdatePost</span> <span class="o">&lt;</span> <span class="no">Mutations</span><span class="o">::</span><span class="no">BaseMutation</span>
-  <span class="c1"># Use `null: true` to support rich errors:</span>
-  <span class="n">field</span> <span class="ss">:post</span><span class="p">,</span> <span class="no">Types</span><span class="o">::</span><span class="no">Post</span><span class="p">,</span> <span class="ss">null: </span><span class="kp">true</span>
+  <span class="c1"># Use the default `null: true` to support rich errors:</span>
+  <span class="n">field</span> <span class="ss">:post</span><span class="p">,</span> <span class="no">Types</span><span class="o">::</span><span class="no">Post</span>
   <span class="c1"># ...</span>
 <span class="k">end</span>
 </code></pre></div></div>
@@ -199,6 +275,10 @@
       header.textContent = "";
       header.appendChild(headerLink);
     }
+  }
+  function navigateToSelected(selectElement) {
+    var nextPage = selectElement.selectedOptions[0].dataset["target"]
+    document.location = nextPage
   }
 </script>
 

@@ -1,26 +1,12 @@
 <!DOCTYPE HTML>
 <html lang="en">
   <head>
-    <meta http-equiv="refresh" content="1;url=/api-doc/1.12.16/GraphQL/Execution/Errors" />
+    <meta http-equiv="refresh" content="1;url=/api-doc/2.0.2/GraphQL/Execution/Errors" />
   </head>
   <body>
     <p>Class: GraphQL::Execution::Errors &lt; Object
-A plugin that wraps query execution with error handling. Supports
-class-based schemas and the new Interpreter runtime only. 
-Examples:</p>
-<h1 id="handling-activerecordnotfound">Handling ActiveRecord::NotFound</h1>
-<p>class MySchema &lt; GraphQL::Schema
-use GraphQL::Execution::Errors
-rescue_from(ActiveRecord::NotFound) do |err, obj, args, ctx, field|
-ErrorTracker.log(“Not Found: #{err.message}”)
-nil
-end
-end
 Class methods:
-use
-Instance methods:
-each_rescue, find_handler_for, initialize, rescue_from,
-with_error_handling</p>
+find_handler_for, register_rescue_from</p>
 
 
   </body>

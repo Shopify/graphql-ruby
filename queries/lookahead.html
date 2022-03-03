@@ -19,7 +19,7 @@
           </a>
           <a href="/getting_started">Get Started</a>
           <a href="/guides">Guides</a>
-          <a href="/api-doc/1.12.16/">API</a>
+          <a href="/api-doc/2.0.2/">API</a>
           <a href="https://tinyletter.com/graphql-ruby">Newsletter</a>
           <a href="https://github.com/rmosolgo/graphql-ruby">Source Code</a>
           <a href="https://graphql.pro">Upgrade to Pro</a>
@@ -37,17 +37,107 @@
       </div>
     </div>
     <div class="container">
-      <p class="breadcrumb">
-  <a href="/">GraphQL</a>
-  &raquo; <a href="/guides">Guides</a>
-   &raquo; <a href="/guides#queries-guides">Queries</a>
-  &raquo; Lookahead
-</p>
+      <ul class="breadcrumb">
+  <li><a href="/guides">Guides</a></li>
+  <li>
+    <select class="jump-to-select" onchange="navigateToSelected(this)">
+      
+        <option  data-target="/schema/definition.html">Schema</option>
+      
+        <option  selected data-target="/queries/executing_queries.html">Queries</option>
+      
+        <option  data-target="/type_definitions/objects.html">Type Definitions</option>
+      
+        <option  data-target="/authorization/overview.html">Authorization</option>
+      
+        <option  data-target="/fields/introduction.html">Fields</option>
+      
+        <option  data-target="/mutations/mutation_root.html">Mutations</option>
+      
+        <option  data-target="/errors/overview.html">Errors</option>
+      
+        <option  data-target="/pagination/overview.html">Pagination</option>
+      
+        <option  data-target="/relay/range_add.html">Relay</option>
+      
+        <option  data-target="/dataloader/overview.html">Dataloader</option>
+      
+        <option  data-target="/subscriptions/overview.html">Subscriptions</option>
+      
+        <option  data-target="/pro/home.html">GraphQL Pro</option>
+      
+        <option  data-target="/operation_store/overview.html">GraphQL Pro - OperationStore</option>
+      
+        <option  data-target="/defer/overview.html">GraphQL Pro - Defer</option>
+      
+        <option  data-target="/limiters/overview.html">GraphQL Enterprise - Rate Limiters</option>
+      
+        <option  data-target="/object_cache/overview.html">GraphQL Enterprise - Object Cache</option>
+      
+        <option  data-target="/changesets/overview.html">GraphQL Enterprise - Changesets</option>
+      
+        <option  data-target="/javascript_client/overview.html">JavaScript Client</option>
+      
+        <option  data-target="/language_tools/visitor.html">Language Tools</option>
+      
+        <option  data-target="/testing/overview.html">Testing</option>
+      
+        <option  data-target="/development.html">Other</option>
+      
+    </select>
+  </li>
+  <li>
+    <select class="jump-to-select" onchange="navigateToSelected(this)">
+      
+        <option  data-target="/queries/executing_queries.html">Executing Queries</option>
+      
+        <option  data-target="/queries/ast_analysis.html">Ahead-of-Time AST Analysis</option>
+      
+        <option  data-target="/queries/phases_of_execution.html">Phases of Execution</option>
+      
+        <option  data-target="/queries/complexity_and_depth.html">Complexity & Depth</option>
+      
+        <option  data-target="/queries/timeout.html">Timeout</option>
+      
+        <option  data-target="/queries/multiplex.html">Multiplex</option>
+      
+        <option  selected data-target="/queries/lookahead.html">Lookahead</option>
+      
+        <option  data-target="/queries/tracing.html">Tracing</option>
+      
+        <option  data-target="/queries/backtrace_annotations.html">Backtrace Annotations</option>
+      
+        <option  data-target="/queries/response_extensions.html">Response Extensions</option>
+      
+        <option  data-target="/queries/instrumentation.html">Instrumentation</option>
+      
+    </select>
+  </li>
+</ul>
+
 
 
 <h1 class="guide-header">Lookahead</h1>
+<div class="guide-table-of-contents"><div class="table-of-contents">
+  <h3 class="contents-header">Contents</h3>
+  <ul class="contents-list">
+    <li class='contents-entry entry-depth-2'>
+                <span class='section-count'>1. </span><a href='#getting-a-lookahead'>Getting a Lookahead
+</a>
+              </li>
+<li class='contents-entry entry-depth-2'>
+                <span class='section-count'>2. </span><a href='#using-a-lookahead'>Using a lookahead
+</a>
+              </li>
+<li class='contents-entry entry-depth-2'>
+                <span class='section-count'>3. </span><a href='#lookaheads-with-connections'>Lookaheads with connections
+</a>
+              </li>
+  </ul>
+</div>
+</div>
 <div class="guide-container">
-  <p>GraphQL-Ruby 1.9+ includes <a href="/api-doc/1.12.16/GraphQL/Execution/Lookahead" target="_blank" title="API docs for GraphQL::Execution::Lookahead"><code>GraphQL::Execution::Lookahead</code></a> for checking whether child fields are selected. You can use this to optimize database access, for example, selecting only the <em>needed</em> fields from the database.</p>
+  <p>GraphQL-Ruby 1.9+ includes <a href="/api-doc/2.0.2/GraphQL/Execution/Lookahead" target="_blank" title="API docs for GraphQL::Execution::Lookahead"><code>GraphQL::Execution::Lookahead</code></a> for checking whether child fields are selected. You can use this to optimize database access, for example, selecting only the <em>needed</em> fields from the database.</p>
 
 <h2 id="getting-a-lookahead">Getting a Lookahead</h2>
 
@@ -149,6 +239,10 @@
       header.textContent = "";
       header.appendChild(headerLink);
     }
+  }
+  function navigateToSelected(selectElement) {
+    var nextPage = selectElement.selectedOptions[0].dataset["target"]
+    document.location = nextPage
   }
 </script>
 

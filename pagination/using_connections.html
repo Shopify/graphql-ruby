@@ -19,7 +19,7 @@
           </a>
           <a href="/getting_started">Get Started</a>
           <a href="/guides">Guides</a>
-          <a href="/api-doc/1.12.16/">API</a>
+          <a href="/api-doc/2.0.2/">API</a>
           <a href="https://tinyletter.com/graphql-ruby">Newsletter</a>
           <a href="https://github.com/rmosolgo/graphql-ruby">Source Code</a>
           <a href="https://graphql.pro">Upgrade to Pro</a>
@@ -37,15 +37,107 @@
       </div>
     </div>
     <div class="container">
-      <p class="breadcrumb">
-  <a href="/">GraphQL</a>
-  &raquo; <a href="/guides">Guides</a>
-   &raquo; <a href="/guides#pagination-guides">Pagination</a>
-  &raquo; Using Connections
-</p>
+      <ul class="breadcrumb">
+  <li><a href="/guides">Guides</a></li>
+  <li>
+    <select class="jump-to-select" onchange="navigateToSelected(this)">
+      
+        <option  data-target="/schema/definition.html">Schema</option>
+      
+        <option  data-target="/queries/executing_queries.html">Queries</option>
+      
+        <option  data-target="/type_definitions/objects.html">Type Definitions</option>
+      
+        <option  data-target="/authorization/overview.html">Authorization</option>
+      
+        <option  data-target="/fields/introduction.html">Fields</option>
+      
+        <option  data-target="/mutations/mutation_root.html">Mutations</option>
+      
+        <option  data-target="/errors/overview.html">Errors</option>
+      
+        <option  selected data-target="/pagination/overview.html">Pagination</option>
+      
+        <option  data-target="/relay/range_add.html">Relay</option>
+      
+        <option  data-target="/dataloader/overview.html">Dataloader</option>
+      
+        <option  data-target="/subscriptions/overview.html">Subscriptions</option>
+      
+        <option  data-target="/pro/home.html">GraphQL Pro</option>
+      
+        <option  data-target="/operation_store/overview.html">GraphQL Pro - OperationStore</option>
+      
+        <option  data-target="/defer/overview.html">GraphQL Pro - Defer</option>
+      
+        <option  data-target="/limiters/overview.html">GraphQL Enterprise - Rate Limiters</option>
+      
+        <option  data-target="/object_cache/overview.html">GraphQL Enterprise - Object Cache</option>
+      
+        <option  data-target="/changesets/overview.html">GraphQL Enterprise - Changesets</option>
+      
+        <option  data-target="/javascript_client/overview.html">JavaScript Client</option>
+      
+        <option  data-target="/language_tools/visitor.html">Language Tools</option>
+      
+        <option  data-target="/testing/overview.html">Testing</option>
+      
+        <option  data-target="/development.html">Other</option>
+      
+    </select>
+  </li>
+  <li>
+    <select class="jump-to-select" onchange="navigateToSelected(this)">
+      
+        <option  data-target="/pagination/overview.html">Overview</option>
+      
+        <option  data-target="/pagination/connection_concepts.html">Connection Concepts</option>
+      
+        <option  selected data-target="/pagination/using_connections.html">Using Connections</option>
+      
+        <option  data-target="/pagination/custom_connections.html">Custom Connections</option>
+      
+        <option  data-target="/pagination/cursors.html">Cursors</option>
+      
+        <option  data-target="/pagination/stable_relation_connections.html">Stable Relation Connections</option>
+      
+    </select>
+  </li>
+</ul>
+
 
 
 <h1 class="guide-header">Using Connections</h1>
+<div class="guide-table-of-contents"><div class="table-of-contents">
+  <h3 class="contents-header">Contents</h3>
+  <ul class="contents-list">
+    <li class='contents-entry entry-depth-2'>
+                <span class='section-count'>1. </span><a href='#make-connection-fields'>Make Connection Fields
+</a>
+              </li>
+<li class='contents-entry entry-depth-3'>
+                <span class='section-count'></span><a href='#opting-out-of-default-connection-handling'>Opting out of default connection handling
+</a>
+              </li>
+<li class='contents-entry entry-depth-2'>
+                <span class='section-count'>2. </span><a href='#return-collections'>Return Collections
+</a>
+              </li>
+<li class='contents-entry entry-depth-2'>
+                <span class='section-count'>3. </span><a href='#make-custom-connections'>Make Custom Connections
+</a>
+              </li>
+<li class='contents-entry entry-depth-2'>
+                <span class='section-count'>4. </span><a href='#special-cases'>Special Cases
+</a>
+              </li>
+<li class='contents-entry entry-depth-2'>
+                <span class='section-count'>5. </span><a href='#max-page-size'>Max Page Size
+</a>
+              </li>
+  </ul>
+</div>
+</div>
 <div class="guide-container">
   <p>GraphQL-Ruby ships with a few implementations of the <a href="/pagination/connection_concepts">connection pattern</a> that you can use out of the box. They support Ruby Arrays, Mongoid, Sequel, and ActiveRecord.</p>
 
@@ -65,6 +157,16 @@
 </code></pre></div></div>
 
 <p>The field will be given some arguments by default: <code class="language-plaintext highlighter-rouge">first</code>, <code class="language-plaintext highlighter-rouge">last</code>, <code class="language-plaintext highlighter-rouge">after</code>, and <code class="language-plaintext highlighter-rouge">before</code>.</p>
+
+<h3 id="opting-out-of-default-connection-handling">Opting out of default connection handling</h3>
+
+<p>To opt out of GraphQL-Ruby’s default connection handling, add <code class="language-plaintext highlighter-rouge">connection: false</code> to the field definition:</p>
+
+<div class="language-diff highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="gd">- field :items, Types::ItemType.connection_type, null: false
+</span><span class="gi">+ field :items, Types::ItemType.connection_type, null: false, connection: false
+</span></code></pre></div></div>
+
+<p>Then, add any arguments you want (<code class="language-plaintext highlighter-rouge">first</code>, <code class="language-plaintext highlighter-rouge">last</code>, <code class="language-plaintext highlighter-rouge">after</code>, <code class="language-plaintext highlighter-rouge">before</code>) and make sure that your resolver returns an object that can fulfill the fields of the configured return type.</p>
 
 <h2 id="return-collections">Return Collections</h2>
 
@@ -151,6 +253,10 @@
       header.textContent = "";
       header.appendChild(headerLink);
     }
+  }
+  function navigateToSelected(selectElement) {
+    var nextPage = selectElement.selectedOptions[0].dataset["target"]
+    document.location = nextPage
   }
 </script>
 
