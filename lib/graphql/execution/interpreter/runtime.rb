@@ -26,7 +26,8 @@ module GraphQL
           #   ... but the value is only needed for lists with skippable items.
           #   Maybe we can set to `nil` unless we know this object is a skippable list item
           #   (i.e. a direct child of a list with `skip_items_on_raise: true`)
-          def initialize(result_name, parent_result, is_non_null_in_parent, represented_value)
+          # FIXME: likewise for `field`.
+          def initialize(result_name, parent_result, is_non_null_in_parent, represented_value, field)
             @graphql_parent = parent_result
             if parent_result && parent_result.graphql_dead
               @graphql_dead = true
@@ -36,6 +37,7 @@ module GraphQL
             # Jump through some hoops to avoid creating this duplicate storage if at all possible.
             @graphql_metadata = nil
             @represented_value = represented_value
+            @field = field
           end
 
           def path
@@ -48,7 +50,7 @@ module GraphQL
           end
 
           attr_accessor :graphql_dead
-          attr_reader :graphql_parent, :graphql_result_name, :graphql_is_non_null_in_parent, :represented_value
+          attr_reader :graphql_parent, :graphql_result_name, :graphql_is_non_null_in_parent, :represented_value, :field
 
           # True when this result is a List that was marked `skip_items_on_raise: true`.
           # Descendants of this result will have `can_be_skipped?` be true.
@@ -68,7 +70,7 @@ module GraphQL
         end
 
         class GraphQLResultHash
-          def initialize(_result_name, _parent_result, _is_non_null_in_parent, _represented_value)
+          def initialize(_result_name, _parent_result, _is_non_null_in_parent, _represented_value, _field)
             super
             @graphql_result_data = {}
           end
@@ -156,7 +158,7 @@ module GraphQL
         class GraphQLResultArray
           include GraphQLResult
 
-          def initialize(_result_name, _parent_result, _is_non_null_in_parent, _represented_value)
+          def initialize(_result_name, _parent_result, _is_non_null_in_parent, _represented_value, _field)
             super
             @graphql_result_data = []
           end
@@ -216,7 +218,7 @@ module GraphQL
           @lazies_at_depth = lazies_at_depth
           @schema = query.schema
           @context = query.context
-          @response = GraphQLResultHash.new(nil, nil, false, query.root_value)
+          @response = GraphQLResultHash.new(nil, nil, false, query.root_value, nil)
           # Identify runtime directives by checking which of this schema's directives have overridden `def self.resolve`
           @runtime_directive_names = []
           noop_resolve_owner = GraphQL::Schema::Directive.singleton_class
@@ -283,7 +285,7 @@ module GraphQL
               # directly evaluated and the results can be written right into the main response hash.
               tap_or_each(gathered_selections) do |selections, is_selection_array|
                 if is_selection_array
-                  selection_response = GraphQLResultHash.new(nil, nil, false, query.root_value)
+                  selection_response = GraphQLResultHash.new(nil, nil, false, query.root_value, nil)
                   final_response = @response
                 else
                   selection_response = @response
@@ -840,7 +842,7 @@ module GraphQL
             after_lazy(object_proxy, ast_node: ast_node, field: field, owner_object: owner_object, arguments: arguments, trace: false, result_name: result_name, result: selection_result) do |inner_object|
               continue_value = continue_value(inner_object, owner_type, field, is_non_null, ast_node, result_name, selection_result)
               if HALT != continue_value
-                response_hash = GraphQLResultHash.new(result_name, selection_result, is_non_null, continue_value)
+                response_hash = GraphQLResultHash.new(result_name, selection_result, is_non_null, continue_value, field)
                 set_result(selection_result, result_name, response_hash, true, is_non_null)
                 gathered_selections = gather_selections(continue_value, current_type, next_selections)
                 # There are two possibilities for `gathered_selections`:
@@ -853,7 +855,7 @@ module GraphQL
                 #    (Technically, it's possible that one of those entries _doesn't_ require isolation.)
                 tap_or_each(gathered_selections) do |selections, is_selection_array|
                   if is_selection_array
-                    this_result = GraphQLResultHash.new(result_name, selection_result, is_non_null, continue_value)
+                    this_result = GraphQLResultHash.new(result_name, selection_result, is_non_null, continue_value, nil)
                     final_result = response_hash
                   else
                     this_result = response_hash
@@ -890,7 +892,7 @@ module GraphQL
             # This is true for objects, unions, and interfaces
             use_dataloader_job = !inner_type.unwrap.kind.input?
             inner_type_non_null = inner_type.non_null?
-            response_list = GraphQLResultArray.new(result_name, selection_result, is_non_null, value)
+            response_list = GraphQLResultArray.new(result_name, selection_result, is_non_null, value, field)
             response_list.graphql_skip_list_items_that_raise = current_type.skip_nodes_on_raise?
             set_result(selection_result, result_name, response_list, true, is_non_null)
             idx = nil
