@@ -60,9 +60,20 @@ module GraphQL
           # A result can be skipped when it's an ancestor of an item in a List marked `skip_items_on_raise: true`.
           # @return [Boolean]
           def can_be_skipped?
-            return @can_be_skipped if defined?(@can_be_skipped)
+            !nearest_skippable_parent_result.nil?
+          end
 
-            @can_be_skipped = graphql_skip_list_items_that_raise || !!(graphql_parent && graphql_parent.can_be_skipped?)
+          # Crawls up the tree to find the first ancestor that can be skipped, that is, the first item that's a child
+          # of a List marked `skip_items_on_raise: true`.
+          # @return [GraphQLResult]
+          def nearest_skippable_parent_result
+            return @nearest_skippable_parent_result if defined?(@nearest_skippable_parent_result)
+
+            @nearest_skippable_parent_result = if graphql_parent && graphql_parent.graphql_skip_list_items_that_raise
+              self
+            else
+              graphql_parent && graphql_parent.nearest_skippable_parent_result
+            end
           end
 
           # @return [Hash] Plain-Ruby result data (`@graphql_metadata` contains Result wrapper objects)
@@ -567,14 +578,19 @@ module GraphQL
               err
             rescue StandardError => err
               begin
-                if selection_result.can_be_skipped?
-                  context.skip_from_parent_list # Skip silently without informing the user's `rescue_from` block.
-                else
+                nearest_skippable_parent_result = selection_result.nearest_skippable_parent_result
+
+                if nearest_skippable_parent_result && (on_raise_callback = nearest_skippable_parent_result.field.on_raise_callback)
                   begin
+                    nearest_skippable_list_item = nearest_skippable_parent_result.represented_value.object
+                    on_raise_callback.call(err, object, kwarg_arguments, context, nearest_skippable_parent_result.field, nearest_skippable_list_item)
+                  rescue GraphQL::ExecutionError => err  # TODO: DRY me
+                    err
+                  rescue StandardError => err
                     query.handle_or_reraise(err)
-                  rescue GraphQL::ExecutionError => ex_err
-                    ex_err
                   end
+                else
+                  query.handle_or_reraise(err)
                 end
               rescue GraphQL::ExecutionError => ex_err
                 ex_err
