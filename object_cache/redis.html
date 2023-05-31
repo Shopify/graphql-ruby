@@ -19,7 +19,7 @@
           </a>
           <a href="/getting_started">Get Started</a>
           <a href="/guides">Guides</a>
-          <a href="/api-doc/2.0.2/">API</a>
+          <a href="/api-doc/2.0.22/">API</a>
           <a href="https://tinyletter.com/graphql-ruby">Newsletter</a>
           <a href="https://github.com/rmosolgo/graphql-ruby">Source Code</a>
           <a href="https://graphql.pro">Upgrade to Pro</a>
@@ -117,16 +117,9 @@
 <h1 class="guide-header">Redis Configuration</h1>
 <div class="guide-table-of-contents"><div class="table-of-contents">
   <h3 class="contents-header">Contents</h3>
-  <ul class="contents-list">
-    <li class='contents-entry entry-depth-2'>
-                <span class='section-count'>1. </span><a href='#data-structure'>Data Structure
-</a>
-              </li>
-<li class='contents-entry entry-depth-2'>
-                <span class='section-count'>2. </span><a href='#memory-management'>Memory Management
-</a>
-              </li>
-  </ul>
+  <ol class='contents-list'><li class='contents-entry'><a href='#data-structure'>Data Structure
+</a></li><li class='contents-entry'><a href='#memory-management'>Memory Management
+</a></li></ol>
 </div>
 </div>
 <div class="guide-container">
@@ -142,9 +135,9 @@
 "query2:result" =&gt; '{"data":{...}}'
 "query2:objects" =&gt; ["obj2:v2", "obj3:v1"]
 
-"obj1:v1" =&gt; { "fingerprint" =&gt; "...", "id" =&gt; "..." }
-"obj2:v2" =&gt; { "fingerprint" =&gt; "...", "id" =&gt; "..." }
-"obj3:v1" =&gt; { "fingerprint" =&gt; "...", "id" =&gt; "..." }
+"obj1:v1" =&gt; { "fingerprint" =&gt; "...", "id" =&gt; "...", "type_name" =&gt; "..." }
+"obj2:v2" =&gt; { "fingerprint" =&gt; "...", "id" =&gt; "...", "type_name" =&gt; "..." }
+"obj3:v1" =&gt; { "fingerprint" =&gt; "...", "id" =&gt; "...", "type_name" =&gt; "..." }
 
 "obj1:v1:queries" =&gt; ["query1"]
 "obj2:v2:queries" =&gt; ["query1", "query2"]

@@ -19,7 +19,7 @@
           </a>
           <a href="/getting_started">Get Started</a>
           <a href="/guides">Guides</a>
-          <a href="/api-doc/2.0.2/">API</a>
+          <a href="/api-doc/2.0.22/">API</a>
           <a href="https://tinyletter.com/graphql-ruby">Newsletter</a>
           <a href="https://github.com/rmosolgo/graphql-ruby">Source Code</a>
           <a href="https://graphql.pro">Upgrade to Pro</a>
@@ -108,32 +108,13 @@
 <h1 class="guide-header">Introduction</h1>
 <div class="guide-table-of-contents"><div class="table-of-contents">
   <h3 class="contents-header">Contents</h3>
-  <ul class="contents-list">
-    <li class='contents-entry entry-depth-2'>
-                <span class='section-count'>1. </span><a href='#field-return-type'>Field Return Type
-</a>
-              </li>
-<li class='contents-entry entry-depth-2'>
-                <span class='section-count'>2. </span><a href='#field-documentation'>Field Documentation
-</a>
-              </li>
-<li class='contents-entry entry-depth-2'>
-                <span class='section-count'>3. </span><a href='#field-resolution'>Field Resolution
-</a>
-              </li>
-<li class='contents-entry entry-depth-2'>
-                <span class='section-count'>4. </span><a href='#field-arguments'>Field Arguments
-</a>
-              </li>
-<li class='contents-entry entry-depth-2'>
-                <span class='section-count'>5. </span><a href='#extra-field-metadata'>Extra Field Metadata
-</a>
-              </li>
-<li class='contents-entry entry-depth-2'>
-                <span class='section-count'>6. </span><a href='#field-parameter-default-values'>Field Parameter Default Values
-</a>
-              </li>
-  </ul>
+  <ol class='contents-list'><li class='contents-entry'><a href='#field-return-type'>Field Return Type
+</a></li><li class='contents-entry'><a href='#field-documentation'>Field Documentation
+</a></li><li class='contents-entry'><a href='#field-resolution'>Field Resolution
+</a></li><li class='contents-entry'><a href='#field-arguments'>Field Arguments
+</a></li><li class='contents-entry'><a href='#extra-field-metadata'>Extra Field Metadata
+</a></li><li class='contents-entry'><a href='#field-parameter-default-values'>Field Parameter Default Values
+</a></li></ol>
 </div>
 </div>
 <div class="guide-container">
@@ -218,6 +199,7 @@
 <ul>
   <li>Trying to call a method on the underlying object; <em>OR</em></li>
   <li>If the underlying object is a <code class="language-plaintext highlighter-rouge">Hash</code>, lookup a key in that hash.</li>
+  <li>An optional <code class="language-plaintext highlighter-rouge">:fallback_value</code> can be supplied that will be used if the above fail.</li>
 </ul>
 
 <p>The method name or hash key corresponds to the field name, so in this example:</p>
@@ -329,7 +311,7 @@
   <li><code class="language-plaintext highlighter-rouge">owner</code> (the type that this field belongs to)</li>
   <li><code class="language-plaintext highlighter-rouge">lookahead</code> (see <a href="/queries/lookahead">Lookahead</a>)</li>
   <li><code class="language-plaintext highlighter-rouge">execution_errors</code>, whose <code class="language-plaintext highlighter-rouge">#add(err_or_msg)</code> method should be used for adding errors</li>
-  <li><code class="language-plaintext highlighter-rouge">argument_details</code> (Intepreter only), an instance of <a href="/api-doc/2.0.2/GraphQL/Execution/Interpreter/Arguments" target="_blank" title="API docs for GraphQL::Execution::Interpreter::Arguments"><code>GraphQL::Execution::Interpreter::Arguments</code></a> with argument metadata</li>
+  <li><code class="language-plaintext highlighter-rouge">argument_details</code> (Intepreter only), an instance of <a href="/api-doc/2.0.22/GraphQL/Execution/Interpreter/Arguments" target="_blank" title="API docs for GraphQL::Execution::Interpreter::Arguments"><code>GraphQL::Execution::Interpreter::Arguments</code></a> with argument metadata</li>
   <li><code class="language-plaintext highlighter-rouge">parent</code> (the previous <code class="language-plaintext highlighter-rouge">object</code> in the query)</li>
   <li>Custom extras, see below</li>
 </ul>

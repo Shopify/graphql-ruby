@@ -19,7 +19,7 @@
           </a>
           <a href="/getting_started">Get Started</a>
           <a href="/guides">Guides</a>
-          <a href="/api-doc/2.0.2/">API</a>
+          <a href="/api-doc/2.0.22/">API</a>
           <a href="https://tinyletter.com/graphql-ruby">Newsletter</a>
           <a href="https://github.com/rmosolgo/graphql-ruby">Source Code</a>
           <a href="https://graphql.pro">Upgrade to Pro</a>
@@ -114,38 +114,19 @@
 <h1 class="guide-header">Definition</h1>
 <div class="guide-table-of-contents"><div class="table-of-contents">
   <h3 class="contents-header">Contents</h3>
-  <ul class="contents-list">
-    <li class='contents-entry entry-depth-2'>
-                <span class='section-count'>1. </span><a href='#root-objects-introspection-and-orphan-types'>Root Objects, Introspection and Orphan Types
-</a>
-              </li>
-<li class='contents-entry entry-depth-2'>
-                <span class='section-count'>2. </span><a href='#object-identification-hooks'>Object Identification Hooks
-</a>
-              </li>
-<li class='contents-entry entry-depth-2'>
-                <span class='section-count'>3. </span><a href='#execution-configuration'>Execution Configuration
-</a>
-              </li>
-<li class='contents-entry entry-depth-2'>
-                <span class='section-count'>4. </span><a href='#context-class'>Context Class
-</a>
-              </li>
-<li class='contents-entry entry-depth-2'>
-                <span class='section-count'>5. </span><a href='#default-limits'>Default Limits
-</a>
-              </li>
-<li class='contents-entry entry-depth-2'>
-                <span class='section-count'>6. </span><a href='#plugins'>Plugins
-</a>
-              </li>
-  </ul>
+  <ol class='contents-list'><li class='contents-entry'><a href='#root-objects-introspection-and-orphan-types'>Root Objects, Introspection and Orphan Types
+</a></li><li class='contents-entry'><a href='#object-identification-hooks'>Object Identification Hooks
+</a></li><li class='contents-entry'><a href='#execution-configuration'>Execution Configuration
+</a></li><li class='contents-entry'><a href='#context-class'>Context Class
+</a></li><li class='contents-entry'><a href='#default-limits'>Default Limits
+</a></li><li class='contents-entry'><a href='#plugins'>Plugins
+</a></li></ol>
 </div>
 </div>
 <div class="guide-container">
   <p>A GraphQL system is called a <em>schema</em>. The schema contains all the types and fields in the system. The schema executes queries and publishes an <a href="/schema/introspection">introspection system</a>.</p>
 
-<p>Your GraphQL schema is a class that extends <a href="/api-doc/2.0.2/GraphQL/Schema" target="_blank" title="API docs for GraphQL::Schema"><code>GraphQL::Schema</code></a>, for example:</p>
+<p>Your GraphQL schema is a class that extends <a href="/api-doc/2.0.22/GraphQL/Schema" target="_blank" title="API docs for GraphQL::Schema"><code>GraphQL::Schema</code></a>, for example:</p>
 
 <div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">MyAppSchema</span> <span class="o">&lt;</span> <span class="no">GraphQL</span><span class="o">::</span><span class="no">Schema</span>
   <span class="n">max_complexity</span> <span class="mi">400</span>
@@ -276,7 +257,7 @@
 
 <h2 id="context-class">Context Class</h2>
 
-<p>Usually, <code class="language-plaintext highlighter-rouge">context</code> is an instance of <a href="/api-doc/2.0.2/GraphQL/Query/Context" target="_blank" title="API docs for GraphQL::Query::Context"><code>GraphQL::Query::Context</code></a>, but you can create a custom subclass and attach it with <code class="language-plaintext highlighter-rouge">.context_class</code>, for example:</p>
+<p>Usually, <code class="language-plaintext highlighter-rouge">context</code> is an instance of <a href="/api-doc/2.0.22/GraphQL/Query/Context" target="_blank" title="API docs for GraphQL::Query::Context"><code>GraphQL::Query::Context</code></a>, but you can create a custom subclass and attach it with <code class="language-plaintext highlighter-rouge">.context_class</code>, for example:</p>
 
 <div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">CustomContext</span> <span class="o">&lt;</span> <span class="no">GraphQL</span><span class="o">::</span><span class="no">Query</span><span class="o">::</span><span class="no">Context</span>
   <span class="c1"># Shorthand to get the current user</span>
@@ -299,7 +280,7 @@
 <p><code class="language-plaintext highlighter-rouge">default_max_page_size</code> applies limits to <code class="language-plaintext highlighter-rouge">Connection</code> fields.</p>
 
 <div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">MySchema</span> <span class="o">&lt;</span> <span class="no">GraphQL</span><span class="o">::</span><span class="no">Schema</span>
-  <span class="n">max_depth</span> <span class="mi">10</span>
+  <span class="n">max_depth</span> <span class="mi">15</span>
   <span class="n">max_complexity</span> <span class="mi">300</span>
   <span class="n">default_max_page_size</span> <span class="mi">20</span>
 <span class="k">end</span>

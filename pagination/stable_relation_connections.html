@@ -19,7 +19,7 @@
           </a>
           <a href="/getting_started">Get Started</a>
           <a href="/guides">Guides</a>
-          <a href="/api-doc/2.0.2/">API</a>
+          <a href="/api-doc/2.0.22/">API</a>
           <a href="https://tinyletter.com/graphql-ruby">Newsletter</a>
           <a href="https://github.com/rmosolgo/graphql-ruby">Source Code</a>
           <a href="https://graphql.pro">Upgrade to Pro</a>
@@ -119,32 +119,13 @@
 <h1 class="guide-header">Stable Relation Connections</h1>
 <div class="guide-table-of-contents"><div class="table-of-contents">
   <h3 class="contents-header">Contents</h3>
-  <ul class="contents-list">
-    <li class='contents-entry entry-depth-2'>
-                <span class='section-count'>1. </span><a href='#what-s-the-difference'>What’s the difference?
-</a>
-              </li>
-<li class='contents-entry entry-depth-2'>
-                <span class='section-count'>2. </span><a href='#installation'>Installation
-</a>
-              </li>
-<li class='contents-entry entry-depth-2'>
-                <span class='section-count'>3. </span><a href='#implementation-notes'>Implementation Notes
-</a>
-              </li>
-<li class='contents-entry entry-depth-2'>
-                <span class='section-count'>4. </span><a href='#grouped-relations'>Grouped Relations
-</a>
-              </li>
-<li class='contents-entry entry-depth-2'>
-                <span class='section-count'>5. </span><a href='#backwards-compatibility'>Backwards Compatibility
-</a>
-              </li>
-<li class='contents-entry entry-depth-2'>
-                <span class='section-count'>6. </span><a href='#activerecord-versions'>ActiveRecord Versions
-</a>
-              </li>
-  </ul>
+  <ol class='contents-list'><li class='contents-entry'><a href='#what-s-the-difference'>What’s the difference?
+</a></li><li class='contents-entry'><a href='#installation'>Installation
+</a></li><li class='contents-entry'><a href='#implementation-notes'>Implementation Notes
+</a></li><li class='contents-entry'><a href='#grouped-relations'>Grouped Relations
+</a></li><li class='contents-entry'><a href='#backwards-compatibility'>Backwards Compatibility
+</a></li><li class='contents-entry'><a href='#activerecord-versions'>ActiveRecord Versions
+</a></li></ol>
 </div>
 </div>
 <div class="guide-container">
@@ -154,7 +135,7 @@
 
 <h2 id="whats-the-difference">What’s the difference?</h2>
 
-<p>The default <a href="/api-doc/2.0.2/GraphQL/Pagination/ActiveRecordRelationConnection" target="_blank" title="API docs for GraphQL::Pagination::ActiveRecordRelationConnection"><code>GraphQL::Pagination::ActiveRecordRelationConnection</code></a> (which turns an <code class="language-plaintext highlighter-rouge">ActiveRecord::Relation</code> into a GraphQL-ready connection) uses <em>offset</em> as a cursor. This naive approach is sufficient for many cases, but it’s subject to a specific set of bugs.</p>
+<p>The default <a href="/api-doc/2.0.22/GraphQL/Pagination/ActiveRecordRelationConnection" target="_blank" title="API docs for GraphQL::Pagination::ActiveRecordRelationConnection"><code>GraphQL::Pagination::ActiveRecordRelationConnection</code></a> (which turns an <code class="language-plaintext highlighter-rouge">ActiveRecord::Relation</code> into a GraphQL-ready connection) uses <em>offset</em> as a cursor. This naive approach is sufficient for many cases, but it’s subject to a specific set of bugs.</p>
 
 <p>Let’s say you’re looking at the second page of 10 items (<code class="language-plaintext highlighter-rouge">LIMIT 10 OFFSET 10</code>). During that time, one of the items on page 1 is deleted. When you navigate to page 3 (<code class="language-plaintext highlighter-rouge">LIMIT 10 OFFSET 20</code>), you’ll actually <em>miss</em> one item. The entire list shifted “up” one position when a previous item was deleted.</p>
 

@@ -19,7 +19,7 @@
           </a>
           <a href="/getting_started">Get Started</a>
           <a href="/guides">Guides</a>
-          <a href="/api-doc/2.0.2/">API</a>
+          <a href="/api-doc/2.0.22/">API</a>
           <a href="https://tinyletter.com/graphql-ruby">Newsletter</a>
           <a href="https://github.com/rmosolgo/graphql-ruby">Source Code</a>
           <a href="https://graphql.pro">Upgrade to Pro</a>
@@ -108,36 +108,14 @@
 <h1 class="guide-header">Arguments</h1>
 <div class="guide-table-of-contents"><div class="table-of-contents">
   <h3 class="contents-header">Contents</h3>
-  <ul class="contents-list">
-    <li class='contents-entry entry-depth-2'>
-                <span class='section-count'>1. </span><a href='#nullability'>Nullability
-</a>
-              </li>
-<li class='contents-entry entry-depth-3'>
-                <span class='section-count'></span><a href='#default-values'>Default Values
-</a>
-              </li>
-<li class='contents-entry entry-depth-2'>
-                <span class='section-count'>2. </span><a href='#deprecation'>Deprecation
-</a>
-              </li>
-<li class='contents-entry entry-depth-2'>
-                <span class='section-count'>3. </span><a href='#aliasing'>Aliasing
-</a>
-              </li>
-<li class='contents-entry entry-depth-2'>
-                <span class='section-count'>4. </span><a href='#preprocessing'>Preprocessing
-</a>
-              </li>
-<li class='contents-entry entry-depth-2'>
-                <span class='section-count'>5. </span><a href='#automatic-camelization'>Automatic camelization
-</a>
-              </li>
-<li class='contents-entry entry-depth-2'>
-                <span class='section-count'>6. </span><a href='#valid-argument-types'>Valid Argument Types
-</a>
-              </li>
-  </ul>
+  <ol class='contents-list'><li class='contents-entry'><a href='#nullability'>Nullability
+</a><ol class='contents-list'><li class='contents-entry'><a href='#default-values'>Default Values
+</a></li></ol></li><li class='contents-entry'><a href='#deprecation'>Deprecation
+</a></li><li class='contents-entry'><a href='#aliasing'>Aliasing
+</a></li><li class='contents-entry'><a href='#preprocessing'>Preprocessing
+</a></li><li class='contents-entry'><a href='#automatic-camelization'>Automatic camelization
+</a></li><li class='contents-entry'><a href='#valid-argument-types'>Valid Argument Types
+</a></li></ol>
 </div>
 </div>
 <div class="guide-container">
@@ -291,11 +269,11 @@ exposing another key to clients.</p>
 <p>Only certain types are valid for arguments:</p>
 
 <ul>
-  <li><a href="/api-doc/2.0.2/GraphQL/ScalarType" target="_blank" title="API docs for GraphQL::ScalarType"><code>GraphQL::ScalarType</code></a>, including built-in scalars (string, int, float, boolean, ID)</li>
-  <li><a href="/api-doc/2.0.2/GraphQL/EnumType" target="_blank" title="API docs for GraphQL::EnumType"><code>GraphQL::EnumType</code></a></li>
-  <li><a href="/api-doc/2.0.2/GraphQL/InputObjectType" target="_blank" title="API docs for GraphQL::InputObjectType"><code>GraphQL::InputObjectType</code></a>, which allows key-value pairs as input</li>
-  <li><a href="/api-doc/2.0.2/GraphQL/ListType" target="_blank" title="API docs for GraphQL::ListType"><code>GraphQL::ListType</code></a>s of a valid input type</li>
-  <li><a href="/api-doc/2.0.2/GraphQL/NonNullType" target="_blank" title="API docs for GraphQL::NonNullType"><code>GraphQL::NonNullType</code></a>s of a valid input type</li>
+  <li><a href="/api-doc/2.0.22/GraphQL/Schema/Scalar" target="_blank" title="API docs for GraphQL::Schema::Scalar"><code>GraphQL::Schema::Scalar</code></a>, including built-in scalars (string, int, float, boolean, ID)</li>
+  <li><a href="/api-doc/2.0.22/GraphQL/Schema/Enum" target="_blank" title="API docs for GraphQL::Schema::Enum"><code>GraphQL::Schema::Enum</code></a></li>
+  <li><a href="/api-doc/2.0.22/GraphQL/Schema/InputObject" target="_blank" title="API docs for GraphQL::Schema::InputObject"><code>GraphQL::Schema::InputObject</code></a>, which allows key-value pairs as input</li>
+  <li><a href="/api-doc/2.0.22/GraphQL/Schema/List" target="_blank" title="API docs for GraphQL::Schema::List"><code>GraphQL::Schema::List</code></a>s of a valid input type, configured using <code class="language-plaintext highlighter-rouge">[...]</code></li>
+  <li><a href="/api-doc/2.0.22/GraphQL/Schema/NonNull" target="_blank" title="API docs for GraphQL::Schema::NonNull"><code>GraphQL::Schema::NonNull</code></a>s of a valid input type (arguments are non-null by default; use <code class="language-plaintext highlighter-rouge">required: false</code> to make optional arguments)</li>
 </ul>
 
 </div>

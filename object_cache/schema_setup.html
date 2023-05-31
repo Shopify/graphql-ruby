@@ -19,7 +19,7 @@
           </a>
           <a href="/getting_started">Get Started</a>
           <a href="/guides">Guides</a>
-          <a href="/api-doc/2.0.2/">API</a>
+          <a href="/api-doc/2.0.22/">API</a>
           <a href="https://tinyletter.com/graphql-ruby">Newsletter</a>
           <a href="https://github.com/rmosolgo/graphql-ruby">Source Code</a>
           <a href="https://graphql.pro">Upgrade to Pro</a>
@@ -117,24 +117,11 @@
 <h1 class="guide-header">Schema Setup</h1>
 <div class="guide-table-of-contents"><div class="table-of-contents">
   <h3 class="contents-header">Contents</h3>
-  <ul class="contents-list">
-    <li class='contents-entry entry-depth-2'>
-                <span class='section-count'>1. </span><a href='#add-the-cache'>Add the Cache
-</a>
-              </li>
-<li class='contents-entry entry-depth-2'>
-                <span class='section-count'>2. </span><a href='#context-fingerprint'>Context Fingerprint
-</a>
-              </li>
-<li class='contents-entry entry-depth-2'>
-                <span class='section-count'>3. </span><a href='#object-fingerprint'>Object Fingerprint
-</a>
-              </li>
-<li class='contents-entry entry-depth-2'>
-                <span class='section-count'>4. </span><a href='#object-identification'>Object Identification
-</a>
-              </li>
-  </ul>
+  <ol class='contents-list'><li class='contents-entry'><a href='#add-the-cache'>Add the Cache
+</a></li><li class='contents-entry'><a href='#context-fingerprint'>Context Fingerprint
+</a></li><li class='contents-entry'><a href='#object-fingerprint'>Object Fingerprint
+</a></li><li class='contents-entry'><a href='#object-identification'>Object Identification
+</a></li></ol>
 </div>
 </div>
 <div class="guide-container">
@@ -151,12 +138,7 @@
 
 <p>See the <a href="/object_cache/redis">Redis guide</a> for details about configuring cache storage.</p>
 
-<p>Additionally, it accepts some options for customizing how introspection is cached:</p>
-
-<ul>
-  <li><code class="language-plaintext highlighter-rouge">cache_introspection: { public: false }</code> to use <a href="/object_cache/caching#public"><code class="language-plaintext highlighter-rouge">public: false</code></a> for all introspection fields. Use this if you hide schema members for some clients.</li>
-  <li><code class="language-plaintext highlighter-rouge">cache_introspection: false</code> to completely disable caching on introspection fields.</li>
-</ul>
+<p>Additionally, it accepts some options for customizing how introspection is cached, see <a href="/object_cache/caching#caching-introspection">Caching Introspection</a></p>
 
 <h2 id="context-fingerprint">Context Fingerprint</h2>
 

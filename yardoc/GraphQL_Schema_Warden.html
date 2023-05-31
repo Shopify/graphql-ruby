@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <html lang="en">
   <head>
-    <meta http-equiv="refresh" content="1;url=/api-doc/2.0.2/GraphQL/Schema/Warden" />
+    <meta http-equiv="refresh" content="1;url=/api-doc/2.0.22/GraphQL/Schema/Warden" />
   </head>
   <body>
     <p>Class: GraphQL::Schema::Warden &lt; Object
@@ -31,14 +31,13 @@ end</p>
 <p>missing_required_flags = MissingRequiredFlags.new(current_user)</p>
 <h1 id="this-query-can-only-access-members-which-match-the-users-flags">This query can only access members which match the user’s flags</h1>
 <p>result = Schema.execute(query_string, except: missing_required_flags)
-Direct Known Subclasses:
-Query::NullContext::NullWarden
 Class methods:
 from_context, visible_entry?
 Instance methods:
 arguments, directives, enum_values, field_on_visible_interface?,
-fields, get_argument, get_field, get_type, initialize, interfaces,
-orphan_type?, possible_types, reachable_type?, reachable_type_set,
+fields, get_argument, get_field, get_type, initialize,
+interface_type_memberships, interfaces, orphan_type?,
+possible_types, reachable_type?, reachable_type_set,
 reachable_types, read_through, referenced?, root_type?,
 root_type_for_operation, types, unfiltered_interfaces,
 union_memberships, visible?, visible_abstract_type?,

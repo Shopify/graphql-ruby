@@ -19,7 +19,7 @@
           </a>
           <a href="/getting_started">Get Started</a>
           <a href="/guides">Guides</a>
-          <a href="/api-doc/2.0.2/">API</a>
+          <a href="/api-doc/2.0.22/">API</a>
           <a href="https://tinyletter.com/graphql-ruby">Newsletter</a>
           <a href="https://github.com/rmosolgo/graphql-ruby">Source Code</a>
           <a href="https://graphql.pro">Upgrade to Pro</a>
@@ -110,32 +110,17 @@
 <h1 class="guide-header">Sources</h1>
 <div class="guide-table-of-contents"><div class="table-of-contents">
   <h3 class="contents-header">Contents</h3>
-  <ul class="contents-list">
-    <li class='contents-entry entry-depth-2'>
-                <span class='section-count'>1. </span><a href='#source-concepts'>Source Concepts
-</a>
-              </li>
-<li class='contents-entry entry-depth-2'>
-                <span class='section-count'>2. </span><a href='#example-loading-strings-from-redis-by-key'>Example: Loading Strings from Redis by Key
-</a>
-              </li>
-<li class='contents-entry entry-depth-2'>
-                <span class='section-count'>3. </span><a href='#example-loading-activerecord-objects-by-id'>Example: Loading ActiveRecord Objects by ID
-</a>
-              </li>
-<li class='contents-entry entry-depth-2'>
-                <span class='section-count'>4. </span><a href='#example-batched-calculations'>Example: Batched Calculations
-</a>
-              </li>
-<li class='contents-entry entry-depth-2'>
-                <span class='section-count'>5. </span><a href='#example-loading-in-a-background-thread'>Example: Loading in a background thread
-</a>
-              </li>
-  </ul>
+  <ol class='contents-list'><li class='contents-entry'><a href='#source-concepts'>Source Concepts
+</a></li><li class='contents-entry'><a href='#example-loading-strings-from-redis-by-key'>Example: Loading Strings from Redis by Key
+</a></li><li class='contents-entry'><a href='#example-loading-activerecord-objects-by-id'>Example: Loading ActiveRecord Objects by ID
+</a></li><li class='contents-entry'><a href='#example-batched-calculations'>Example: Batched Calculations
+</a></li><li class='contents-entry'><a href='#example-loading-in-a-background-thread'>Example: Loading in a background thread
+</a></li><li class='contents-entry'><a href='#filling-the-dataloader-cache'>Filling the Dataloader Cache
+</a></li></ol>
 </div>
 </div>
 <div class="guide-container">
-  <p><em>Sources</em> are what <a href="/api-doc/2.0.2/GraphQL/Dataloader" target="_blank" title="API docs for GraphQL::Dataloader"><code>GraphQL::Dataloader</code></a> uses to fetch data from external services.</p>
+  <p><em>Sources</em> are what <a href="/api-doc/2.0.22/GraphQL/Dataloader" target="_blank" title="API docs for GraphQL::Dataloader"><code>GraphQL::Dataloader</code></a> uses to fetch data from external services.</p>
 
 <h2 id="source-concepts">Source Concepts</h2>
 
@@ -152,13 +137,13 @@
     <p>Under the hood, each Source instance maintains a <code class="language-plaintext highlighter-rouge">key =&gt; object</code> cache.</p>
   </li>
   <li>
-    <p><em>batch parameters</em>, which are the basis of batched groups. For example, if you’re loading records from different database tables, the the table name would be a batch parameter.</p>
+    <p><em>batch parameters</em>, which are the basis of batched groups. For example, if you’re loading records from different database tables, the table name would be a batch parameter.</p>
 
     <p>Batch parameters are given to <code class="language-plaintext highlighter-rouge">dataloader.with(source_class, *batch_parameters)</code>, and the default is <em>no batch parameters</em>. When you define a source, you should add the batch parameters to <code class="language-plaintext highlighter-rouge">def initialize(...)</code> and store them in instance variables.</p>
 
     <p>(<code class="language-plaintext highlighter-rouge">dataloader.with(source_class, *batch_parameters)</code> returns an instance of <code class="language-plaintext highlighter-rouge">source_class</code> with the given batch parameters – but it might be an instance which was cached by <code class="language-plaintext highlighter-rouge">dataloader</code>.)</p>
 
-    <p>Additionally, batch parameters are used to de-duplicate Source initializations during a query run. <code class="language-plaintext highlighter-rouge">.with(...)</code> calls that have the same batch parameters will use the same Source instance under the hood. To customize how Sources are de-duplicated, see <a href="/api-doc/2.0.2/GraphQL/Dataloader/Source#batch_key_for-class_method" target="_blank" title="API docs for GraphQL::Dataloader::Source.batch_key_for"><code>GraphQL::Dataloader::Source.batch_key_for</code></a>.</p>
+    <p>Additionally, batch parameters are used to de-duplicate Source initializations during a query run. <code class="language-plaintext highlighter-rouge">.with(...)</code> calls that have the same batch parameters will use the same Source instance under the hood. To customize how Sources are de-duplicated, see <a href="/api-doc/2.0.22/GraphQL/Dataloader/Source#batch_key_for-class_method" target="_blank" title="API docs for GraphQL::Dataloader::Source.batch_key_for"><code>GraphQL::Dataloader::Source.batch_key_for</code></a>.</p>
   </li>
 </ul>
 
@@ -261,6 +246,18 @@
 <p>For a more robust asynchronous task primitive, check out <a href="http://ruby-concurrency.github.io/concurrent-ruby/master/Concurrent/Future.html"><code class="language-plaintext highlighter-rouge">Concurrent::Future</code></a>.</p>
 
 <p>Ruby 3.0 added built-in support for yielding Fibers that make I/O calls – hopefully a future GraphQL-Ruby version will work with that!</p>
+
+<h2 id="filling-the-dataloader-cache">Filling the Dataloader Cache</h2>
+
+<p>If you load records from the database, you can use them to populate a source’s cache by using <a href="/api-doc/2.0.22/GraphQL/Dataloader/Source#merge-instance_method" target="_blank" title="API docs for GraphQL::Dataloader::Source#merge"><code>Dataloader::Source#merge</code></a>. For example:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Build a `{ key =&gt; value }` map to populate the cache</span>
+<span class="n">comments_by_id</span> <span class="o">=</span> <span class="n">post</span><span class="p">.</span><span class="nf">comments</span><span class="p">.</span><span class="nf">each_with_object</span><span class="p">({})</span> <span class="p">{</span> <span class="o">|</span><span class="n">comment</span><span class="p">,</span> <span class="nb">hash</span><span class="o">|</span> <span class="nb">hash</span><span class="p">[</span><span class="n">comment</span><span class="p">.</span><span class="nf">id</span><span class="p">]</span> <span class="o">=</span> <span class="n">comment</span> <span class="p">}</span>
+<span class="c1"># Merge the map into the source's cache</span>
+<span class="n">dataloader</span><span class="p">.</span><span class="nf">with</span><span class="p">(</span><span class="no">Sources</span><span class="o">::</span><span class="no">ActiveRecordObject</span><span class="p">,</span> <span class="no">Comment</span><span class="p">).</span><span class="nf">merge</span><span class="p">(</span><span class="n">comments_by_id</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>After that, any calls to <code class="language-plaintext highlighter-rouge">.load(id)</code> will use those already-loaded records if they’re available.</p>
 
 </div>
 <p class="guide-footer">

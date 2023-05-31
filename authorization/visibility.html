@@ -19,7 +19,7 @@
           </a>
           <a href="/getting_started">Get Started</a>
           <a href="/guides">Guides</a>
-          <a href="/api-doc/2.0.2/">API</a>
+          <a href="/api-doc/2.0.22/">API</a>
           <a href="https://tinyletter.com/graphql-ruby">Newsletter</a>
           <a href="https://github.com/rmosolgo/graphql-ruby">Source Code</a>
           <a href="https://graphql.pro">Upgrade to Pro</a>
@@ -110,24 +110,12 @@
 <h1 class="guide-header">Visibility</h1>
 <div class="guide-table-of-contents"><div class="table-of-contents">
   <h3 class="contents-header">Contents</h3>
-  <ul class="contents-list">
-    <li class='contents-entry entry-depth-2'>
-                <span class='section-count'>1. </span><a href='#hiding-parts-of-the-schema'>Hiding Parts of the Schema
-</a>
-              </li>
-<li class='contents-entry entry-depth-2'>
-                <span class='section-count'>2. </span><a href='#object-visibility'>Object Visibility
-</a>
-              </li>
-<li class='contents-entry entry-depth-2'>
-                <span class='section-count'>3. </span><a href='#field-visibility'>Field Visibility
-</a>
-              </li>
-<li class='contents-entry entry-depth-2'>
-                <span class='section-count'>4. </span><a href='#argument-visibility'>Argument Visibility
-</a>
-              </li>
-  </ul>
+  <ol class='contents-list'><li class='contents-entry'><a href='#hiding-parts-of-the-schema'>Hiding Parts of the Schema
+</a></li><li class='contents-entry'><a href='#object-visibility'>Object Visibility
+</a></li><li class='contents-entry'><a href='#field-visibility'>Field Visibility
+</a></li><li class='contents-entry'><a href='#argument-visibility'>Argument Visibility
+</a></li><li class='contents-entry'><a href='#opting-out'>Opting Out
+</a></li></ol>
 </div>
 </div>
 <div class="guide-container">
@@ -215,13 +203,26 @@
     <span class="k">super</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">block</span><span class="p">)</span>
   <span class="k">end</span>
 
-  <span class="k">def</span> <span class="nf">authorized?</span><span class="p">(</span><span class="n">ctx</span><span class="p">)</span>
+  <span class="k">def</span> <span class="nf">visible?</span><span class="p">(</span><span class="n">ctx</span><span class="p">)</span>
     <span class="k">super</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="vi">@require_logged_in</span> <span class="p">?</span> <span class="n">ctx</span><span class="p">[</span><span class="ss">:viewer</span><span class="p">].</span><span class="nf">present?</span> <span class="p">:</span> <span class="kp">true</span><span class="p">)</span>
   <span class="k">end</span>
 <span class="k">end</span>
 </code></pre></div></div>
 
 <p>For this to work, the base argument class must be <a href="/type_definitions/extensions.html#customizing-arguments">configured with other GraphQL types</a>.</p>
+
+<h2 id="opting-out">Opting Out</h2>
+
+<p>By default, GraphQL-Ruby always runs visibility checks. You can opt out of this by adding to your schema class:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">MySchema</span> <span class="o">&lt;</span> <span class="no">GraphQL</span><span class="o">::</span><span class="no">Schema</span>
+  <span class="c1"># ...</span>
+  <span class="c1"># Opt out of GraphQL-Ruby's visibility feature:</span>
+  <span class="n">use</span> <span class="no">GraphQL</span><span class="o">::</span><span class="no">Schema</span><span class="o">::</span><span class="no">AlwaysVisible</span>
+<span class="k">end</span>
+</code></pre></div></div>
+
+<p>For big schemas, this can be a worthwhile speed-up.</p>
 
 </div>
 <p class="guide-footer">

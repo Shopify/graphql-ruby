@@ -1,25 +1,34 @@
 <!DOCTYPE HTML>
 <html lang="en">
   <head>
-    <meta http-equiv="refresh" content="1;url=/api-doc/2.0.2/GraphQL/Schema" />
+    <meta http-equiv="refresh" content="1;url=/api-doc/2.0.22/GraphQL/Schema" />
   </head>
   <body>
     <p>Class: GraphQL::Schema &lt; Object
-Extend this class to define GraphQL enums in your schema. 
-By default, GraphQL enum values are translated into Ruby strings.
-You can provide a custom value with the <code class="language-plaintext highlighter-rouge">value:</code> keyword. 
+A GraphQL schema which may be queried with GraphQL::Query. 
+The Schema contains:</p>
+<ul>
+  <li>types for exposing your application</li>
+  <li>query analyzers for assessing incoming queries (including max
+depth &amp; max complexity restrictions)</li>
+  <li>execution strategies for running incoming queries
+Schemas start with root types, Schema#query, Schema#mutation and
+Schema#subscription. The schema will traverse the tree of fields &amp;
+types, using those as starting points. Any undiscoverable types may
+be provided with the <code class="language-plaintext highlighter-rouge">types</code> configuration. 
+Schemas can restrict large incoming queries with <code class="language-plaintext highlighter-rouge">max_depth</code> and
+<code class="language-plaintext highlighter-rouge">max_complexity</code> configurations. (These configurations can be
+overridden by specific calls to Schema#execute) 
+Schemas can specify how queries should be executed against them.
+<code class="language-plaintext highlighter-rouge">query_execution_strategy</code>, <code class="language-plaintext highlighter-rouge">mutation_execution_strategy</code> and
+<code class="language-plaintext highlighter-rouge">subscription_execution_strategy</code> each apply to corresponding root
+types. 
 Examples:
-#</p>
-<h1 id="equivalent-to">equivalent to</h1>
-<h1 id="enum-pizzatopping-">enum PizzaTopping {</h1>
-<h1 id="mushrooms">MUSHROOMS</h1>
-<h1 id="onions">ONIONS</h1>
-<h1 id="peppers">PEPPERS</h1>
-<h1>}</h1>
-<p>class PizzaTopping &lt; GraphQL::Enum
-value :MUSHROOMS
-value :ONIONS
-value :PEPPERS
+    <h1 id="defining-a-schema">defining a schema</h1>
+    <p>class MySchema &lt; GraphQL::Schema
+query QueryType</p>
+    <h1 id="if-types-are-only-connected-by-way-of-interfaces-they-must-be-added-here">If types are only connected by way of interfaces, they must be added here</h1>
+    <p>orphan_types ImageType, AudioType
 end
 Direct Known Subclasses:
 Query::NullContext::NullSchema
@@ -27,12 +36,12 @@ Extended by:
 GraphQL::Schema::Member::HasAstNode,
 GraphQL::Schema::FindInheritedValue
 Class methods:
-accessible?, add_subscription_extension_if_necessary,
-add_type_and_traverse, after_any_lazies, after_lazy, as_json,
-context_class, cursor_encoder, default_analysis_engine,
-default_directives, default_execution_strategy, default_filter,
-default_mask, default_max_page_size, deprecated_graphql_definition,
-description, directive, directives,
+add_subscription_extension_if_necessary, add_type_and_traverse,
+after_any_lazies, after_lazy, as_json, context_class,
+cursor_encoder, default_analysis_engine, default_directives,
+default_execution_strategy, default_filter, default_mask,
+default_max_page_size, default_page_size,
+deprecated_graphql_definition, description, directive, directives,
 disable_introspection_entry_points,
 disable_introspection_entry_points?,
 disable_schema_introspection_entry_point,
@@ -40,11 +49,11 @@ disable_schema_introspection_entry_point?,
 disable_type_introspection_entry_point,
 disable_type_introspection_entry_point?, error_handlers, execute,
 find, from_definition, from_introspection, get_field, get_fields,
-get_type, handle_or_reraise, id_from_object, inaccessible_fields,
-inherited, instrument, instrumenters, interpreter?, introspection,
-introspection_system, lazy?, lazy_method_name, lazy_methods,
-lazy_resolve, multiplex, multiplex_analyzer, multiplex_analyzers,
-mutation, mutation_execution_strategy, new_connections?,
+get_type, handle_or_reraise, id_from_object, inherited, instrument,
+instrumenters, interpreter?, introspection, introspection_system,
+lazy?, lazy_method_name, lazy_methods, lazy_resolve, multiplex,
+multiplex_analyzer, multiplex_analyzers, mutation,
+mutation_execution_strategy, new_connections?, new_trace,
 non_introspection_types, object_from_id, orphan_types,
 own_directives, own_instrumenters, own_multiplex_analyzers,
 own_orphan_types, own_plugins, own_possible_types,
@@ -52,11 +61,15 @@ own_query_analyzers, own_tracers, own_types, own_union_memberships,
 parse_error, plugins, possible_types, query, query_analyzer,
 query_analyzers, query_execution_strategy, query_stack_error,
 references_to, rescue_from, resolve_type, root_type_for_operation,
-root_types, sanitized_printer, static_validator, subscription,
-subscription_execution_strategy, sync_lazy, to_definition,
-to_document, to_json, tracer, tracers, type_error, type_from_ast,
-types, unauthorized_field, unauthorized_object, union_memberships,
-use, using_ast_analysis?, validate, visible?</p>
+root_types, sanitized_printer, schema_directive, schema_directives,
+static_validator, subscription, subscription_execution_strategy,
+subscriptions, subscriptions=, sync_lazy, to_definition,
+to_document, to_json, trace_class, trace_class_for, trace_mode,
+trace_options, trace_with, tracer, tracers, type_error,
+type_from_ast, types, unauthorized_field, unauthorized_object,
+union_memberships, use, using_ast_analysis?, validate, visible?</p>
+  </li>
+</ul>
 
 
   </body>

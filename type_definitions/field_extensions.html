@@ -19,7 +19,7 @@
           </a>
           <a href="/getting_started">Get Started</a>
           <a href="/guides">Guides</a>
-          <a href="/api-doc/2.0.2/">API</a>
+          <a href="/api-doc/2.0.22/">API</a>
           <a href="https://tinyletter.com/graphql-ruby">Newsletter</a>
           <a href="https://github.com/rmosolgo/graphql-ruby">Source Code</a>
           <a href="https://graphql.pro">Upgrade to Pro</a>
@@ -120,52 +120,24 @@
 <h1 class="guide-header">Field Extensions</h1>
 <div class="guide-table-of-contents"><div class="table-of-contents">
   <h3 class="contents-header">Contents</h3>
-  <ul class="contents-list">
-    <li class='contents-entry entry-depth-2'>
-                <span class='section-count'>1. </span><a href='#making-a-new-extension'>Making a new extension
-</a>
-              </li>
-<li class='contents-entry entry-depth-2'>
-                <span class='section-count'>2. </span><a href='#using-an-extension'>Using an extension
-</a>
-              </li>
-<li class='contents-entry entry-depth-2'>
-                <span class='section-count'>3. </span><a href='#modifying-field-configuration'>Modifying field configuration
-</a>
-              </li>
-<li class='contents-entry entry-depth-2'>
-                <span class='section-count'>4. </span><a href='#adding-default-argument-configurations'>Adding default argument configurations
-</a>
-              </li>
-<li class='contents-entry entry-depth-2'>
-                <span class='section-count'>5. </span><a href='#modifying-field-execution'>Modifying field execution
-</a>
-              </li>
-<li class='contents-entry entry-depth-3'>
-                <span class='section-count'></span><a href='#execution-memo'>Execution “memo”
-</a>
-              </li>
-<li class='contents-entry entry-depth-2'>
-                <span class='section-count'>6. </span><a href='#extension-options'>Extension options
-</a>
-              </li>
-<li class='contents-entry entry-depth-2'>
-                <span class='section-count'>7. </span><a href='#using-extras'>Using <code>extras</code>
-</a>
-              </li>
-<li class='contents-entry entry-depth-2'>
-                <span class='section-count'>8. </span><a href='#adding-an-extension-by-default'>Adding an extension by default
-</a>
-              </li>
-  </ul>
+  <ol class='contents-list'><li class='contents-entry'><a href='#making-a-new-extension'>Making a new extension
+</a></li><li class='contents-entry'><a href='#using-an-extension'>Using an extension
+</a></li><li class='contents-entry'><a href='#modifying-field-configuration'>Modifying field configuration
+</a></li><li class='contents-entry'><a href='#adding-default-argument-configurations'>Adding default argument configurations
+</a></li><li class='contents-entry'><a href='#modifying-field-execution'>Modifying field execution
+</a><ol class='contents-list'><li class='contents-entry'><a href='#execution-memo'>Execution “memo”
+</a></li></ol></li><li class='contents-entry'><a href='#extension-options'>Extension options
+</a></li><li class='contents-entry'><a href='#using-extras'>Using <code>extras</code>
+</a></li><li class='contents-entry'><a href='#adding-an-extension-by-default'>Adding an extension by default
+</a></li></ol>
 </div>
 </div>
 <div class="guide-container">
-  <p><a href="/api-doc/2.0.2/GraphQL/Schema/FieldExtension" target="_blank" title="API docs for GraphQL::Schema::FieldExtension"><code>GraphQL::Schema::FieldExtension</code></a> provides a way to modify user-defined fields in a programmatic way. For example, Relay connections are implemented as a field extension (<a href="/api-doc/2.0.2/GraphQL/Schema/Field/ConnectionExtension" target="_blank" title="API docs for GraphQL::Schema::Field::ConnectionExtension"><code>GraphQL::Schema::Field::ConnectionExtension</code></a>).</p>
+  <p><a href="/api-doc/2.0.22/GraphQL/Schema/FieldExtension" target="_blank" title="API docs for GraphQL::Schema::FieldExtension"><code>GraphQL::Schema::FieldExtension</code></a> provides a way to modify user-defined fields in a programmatic way. For example, Relay connections are implemented as a field extension (<a href="/api-doc/2.0.22/GraphQL/Schema/Field/ConnectionExtension" target="_blank" title="API docs for GraphQL::Schema::Field::ConnectionExtension"><code>GraphQL::Schema::Field::ConnectionExtension</code></a>).</p>
 
 <h2 id="making-a-new-extension">Making a new extension</h2>
 
-<p>Field extensions are subclasses of <a href="/api-doc/2.0.2/GraphQL/Schema/FieldExtension" target="_blank" title="API docs for GraphQL::Schema::FieldExtension"><code>GraphQL::Schema::FieldExtension</code></a>:</p>
+<p>Field extensions are subclasses of <a href="/api-doc/2.0.22/GraphQL/Schema/FieldExtension" target="_blank" title="API docs for GraphQL::Schema::FieldExtension"><code>GraphQL::Schema::FieldExtension</code></a>:</p>
 
 <div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">MyExtension</span> <span class="o">&lt;</span> <span class="no">GraphQL</span><span class="o">::</span><span class="no">Schema</span><span class="o">::</span><span class="no">FieldExtension</span>
 <span class="k">end</span>
@@ -200,7 +172,7 @@
 
 <h2 id="adding-default-argument-configurations">Adding default argument configurations</h2>
 
-<p>Extensions may provide <em>default</em> argument configurations which are applied if the field doesn’t define the argument for itself. The configuration is passed to <a href="/api-doc/2.0.2/GraphQL/Schema/FieldExtension#default_argument-class_method" target="_blank" title="API docs for GraphQL::Schema::FieldExtension.default_argument"><code>Schema::FieldExtension.default_argument</code></a>. For example, to define a <code class="language-plaintext highlighter-rouge">:query</code> argument if the field doesn’t already have one:</p>
+<p>Extensions may provide <em>default</em> argument configurations which are applied if the field doesn’t define the argument for itself. The configuration is passed to <a href="/api-doc/2.0.22/GraphQL/Schema/FieldExtension#default_argument-class_method" target="_blank" title="API docs for GraphQL::Schema::FieldExtension.default_argument"><code>Schema::FieldExtension.default_argument</code></a>. For example, to define a <code class="language-plaintext highlighter-rouge">:query</code> argument if the field doesn’t already have one:</p>
 
 <div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">class</span> <span class="nc">SearchableExtension</span> <span class="o">&lt;</span> <span class="no">GraphQL</span><span class="o">::</span><span class="no">Schema</span><span class="o">::</span><span class="no">FieldExtension</span>
   <span class="c1"># Any field which uses this extension and _doesn't_ define</span>
@@ -215,9 +187,9 @@
 
 <p>Extensions have two hooks that wrap field resolution. Since GraphQL-Ruby supports deferred execution, these hooks <em>might not</em> be called back-to-back.</p>
 
-<p>First, <a href="/api-doc/2.0.2/GraphQL/Schema/FieldExtension#resolve-instance_method" target="_blank" title="API docs for GraphQL::Schema::FieldExtension#resolve"><code>GraphQL::Schema::FieldExtension#resolve</code></a> is called. <code class="language-plaintext highlighter-rouge">resolve</code> should <code class="language-plaintext highlighter-rouge">yield(object, arguments)</code> to continue execution. If it doesn’t <code class="language-plaintext highlighter-rouge">yield</code>, then the underlying field won’t be called. Whatever <code class="language-plaintext highlighter-rouge">#resolve</code> returns will be used for continuing execution.</p>
+<p>First, <a href="/api-doc/2.0.22/GraphQL/Schema/FieldExtension#resolve-instance_method" target="_blank" title="API docs for GraphQL::Schema::FieldExtension#resolve"><code>GraphQL::Schema::FieldExtension#resolve</code></a> is called. <code class="language-plaintext highlighter-rouge">resolve</code> should <code class="language-plaintext highlighter-rouge">yield(object, arguments)</code> to continue execution. If it doesn’t <code class="language-plaintext highlighter-rouge">yield</code>, then the underlying field won’t be called. Whatever <code class="language-plaintext highlighter-rouge">#resolve</code> returns will be used for continuing execution.</p>
 
-<p>After resolution and <em>after</em> syncing lazy values (like <code class="language-plaintext highlighter-rouge">Promise</code>s from <code class="language-plaintext highlighter-rouge">graphql-batch</code>), <a href="/api-doc/2.0.2/GraphQL/Schema/FieldExtension#after_resolve-instance_method" target="_blank" title="API docs for GraphQL::Schema::FieldExtension#after_resolve"><code>GraphQL::Schema::FieldExtension#after_resolve</code></a> is called. Whatever that method returns will be used as the field’s return value.</p>
+<p>After resolution and <em>after</em> syncing lazy values (like <code class="language-plaintext highlighter-rouge">Promise</code>s from <code class="language-plaintext highlighter-rouge">graphql-batch</code>), <a href="/api-doc/2.0.22/GraphQL/Schema/FieldExtension#after_resolve-instance_method" target="_blank" title="API docs for GraphQL::Schema::FieldExtension#after_resolve"><code>GraphQL::Schema::FieldExtension#after_resolve</code></a> is called. Whatever that method returns will be used as the field’s return value.</p>
 
 <p>See the linked API docs for the parameters of those methods.</p>
 
@@ -259,6 +231,11 @@
   <span class="c1"># Apply the limit from the options, a readable attribute on the class</span>
   <span class="n">value</span><span class="p">.</span><span class="nf">limit</span><span class="p">(</span><span class="n">options</span><span class="p">[</span><span class="ss">:limit</span><span class="p">])</span>
 <span class="k">end</span>
+</code></pre></div></div>
+
+<p>If you use the <code class="language-plaintext highlighter-rouge">extensions: [...]</code> option, you can pass options using a hash:</p>
+
+<div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">field</span> <span class="ss">:name</span><span class="p">,</span> <span class="no">String</span><span class="p">,</span> <span class="ss">null: </span><span class="kp">false</span><span class="p">,</span> <span class="ss">extensions: </span><span class="p">[</span><span class="no">LimitExtension</span> <span class="o">=&gt;</span> <span class="p">{</span> <span class="ss">limit: </span><span class="mi">20</span> <span class="p">}]</span>
 </code></pre></div></div>
 
 <h2 id="using-extras">Using <code class="language-plaintext highlighter-rouge">extras</code></h2>

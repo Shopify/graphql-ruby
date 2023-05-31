@@ -19,7 +19,7 @@
           </a>
           <a href="/getting_started">Get Started</a>
           <a href="/guides">Guides</a>
-          <a href="/api-doc/2.0.2/">API</a>
+          <a href="/api-doc/2.0.22/">API</a>
           <a href="https://tinyletter.com/graphql-ruby">Newsletter</a>
           <a href="https://github.com/rmosolgo/graphql-ruby">Source Code</a>
           <a href="https://graphql.pro">Upgrade to Pro</a>
@@ -119,96 +119,29 @@
 <h1 class="guide-header">Pundit Integration</h1>
 <div class="guide-table-of-contents"><div class="table-of-contents">
   <h3 class="contents-header">Contents</h3>
-  <ul class="contents-list">
-    <li class='contents-entry entry-depth-2'>
-                <span class='section-count'>1. </span><a href='#getting-started'>Getting Started
-</a>
-              </li>
-<li class='contents-entry entry-depth-2'>
-                <span class='section-count'>2. </span><a href='#authorizing-objects'>Authorizing Objects
-</a>
-              </li>
-<li class='contents-entry entry-depth-4'>
-                <span class='section-count'></span><a href='#policies-and-methods'>Policies and Methods
-</a>
-              </li>
-<li class='contents-entry entry-depth-4'>
-                <span class='section-count'></span><a href='#custom-policy-class'>Custom Policy Class
-</a>
-              </li>
-<li class='contents-entry entry-depth-4'>
-                <span class='section-count'></span><a href='#bypassing-policies'>Bypassing Policies
-</a>
-              </li>
-<li class='contents-entry entry-depth-4'>
-                <span class='section-count'></span><a href='#handling-unauthorized-objects'>Handling Unauthorized Objects
-</a>
-              </li>
-<li class='contents-entry entry-depth-2'>
-                <span class='section-count'>3. </span><a href='#scopes'>Scopes
-</a>
-              </li>
-<li class='contents-entry entry-depth-4'>
-                <span class='section-count'></span><a href='#bypassing-scopes'>Bypassing scopes
-</a>
-              </li>
-<li class='contents-entry entry-depth-2'>
-                <span class='section-count'>4. </span><a href='#authorizing-fields'>Authorizing Fields
-</a>
-              </li>
-<li class='contents-entry entry-depth-4'>
-                <span class='section-count'></span><a href='#custom-policy-class'>Custom Policy Class
-</a>
-              </li>
-<li class='contents-entry entry-depth-2'>
-                <span class='section-count'>5. </span><a href='#authorizing-arguments'>Authorizing Arguments
-</a>
-              </li>
-<li class='contents-entry entry-depth-2'>
-                <span class='section-count'>6. </span><a href='#authorizing-mutations'>Authorizing Mutations
-</a>
-              </li>
-<li class='contents-entry entry-depth-4'>
-                <span class='section-count'></span><a href='#setup'>Setup
-</a>
-              </li>
-<li class='contents-entry entry-depth-4'>
-                <span class='section-count'></span><a href='#mutation-level-roles'>Mutation-level roles
-</a>
-              </li>
-<li class='contents-entry entry-depth-4'>
-                <span class='section-count'></span><a href='#custom-policy-class'>Custom Policy Class
-</a>
-              </li>
-<li class='contents-entry entry-depth-4'>
-                <span class='section-count'></span><a href='#authorizing-loaded-objects'>Authorizing Loaded Objects
-</a>
-              </li>
-<li class='contents-entry entry-depth-4'>
-                <span class='section-count'></span><a href='#unauthorized-mutations'>Unauthorized Mutations
-</a>
-              </li>
-<li class='contents-entry entry-depth-2'>
-                <span class='section-count'>7. </span><a href='#authorizing-resolvers'>Authorizing Resolvers
-</a>
-              </li>
-<li class='contents-entry entry-depth-2'>
-                <span class='section-count'>8. </span><a href='#custom-policy-lookup'>Custom Policy Lookup
-</a>
-              </li>
-<li class='contents-entry entry-depth-3'>
-                <span class='section-count'></span><a href='#custom-policy-methods'>Custom Policy Methods
-</a>
-              </li>
-<li class='contents-entry entry-depth-3'>
-                <span class='section-count'></span><a href='#one-policy-per-class'>One Policy Per Class
-</a>
-              </li>
-<li class='contents-entry entry-depth-2'>
-                <span class='section-count'>9. </span><a href='#custom-user-lookup'>Custom User Lookup
-</a>
-              </li>
-  </ul>
+  <ol class='contents-list'><li class='contents-entry'><a href='#getting-started'>Getting Started
+</a></li><li class='contents-entry'><a href='#authorizing-objects'>Authorizing Objects
+</a><ol class='contents-list'><li class='contents-entry'><a href='#policies-and-methods'>Policies and Methods
+</a></li><li class='contents-entry'><a href='#custom-policy-class'>Custom Policy Class
+</a></li><li class='contents-entry'><a href='#bypassing-policies'>Bypassing Policies
+</a></li><li class='contents-entry'><a href='#handling-unauthorized-objects'>Handling Unauthorized Objects
+</a></li></ol></li><li class='contents-entry'><a href='#scopes'>Scopes
+</a><ol class='contents-list'><li class='contents-entry'><a href='#bypassing-scopes'>Bypassing scopes
+</a></li></ol></li><li class='contents-entry'><a href='#authorizing-fields'>Authorizing Fields
+</a><ol class='contents-list'><li class='contents-entry'><a href='#custom-policy-class'>Custom Policy Class
+</a></li></ol></li><li class='contents-entry'><a href='#authorizing-arguments'>Authorizing Arguments
+</a></li><li class='contents-entry'><a href='#authorizing-mutations'>Authorizing Mutations
+</a><ol class='contents-list'><li class='contents-entry'><a href='#setup'>Setup
+</a></li><li class='contents-entry'><a href='#mutation-level-roles'>Mutation-level roles
+</a></li><li class='contents-entry'><a href='#custom-policy-class'>Custom Policy Class
+</a></li><li class='contents-entry'><a href='#authorizing-loaded-objects'>Authorizing Loaded Objects
+</a></li><li class='contents-entry'><a href='#unauthorized-mutations'>Unauthorized Mutations
+</a></li></ol></li><li class='contents-entry'><a href='#authorizing-resolvers'>Authorizing Resolvers
+</a></li><li class='contents-entry'><a href='#custom-policy-lookup'>Custom Policy Lookup
+</a><ol class='contents-list'><li class='contents-entry'><a href='#custom-policy-methods'>Custom Policy Methods
+</a></li><li class='contents-entry'><a href='#one-policy-per-class'>One Policy Per Class
+</a></li></ol></li><li class='contents-entry'><a href='#custom-user-lookup'>Custom User Lookup
+</a></li></ol>
 </div>
 </div>
 <div class="guide-container">
@@ -310,7 +243,7 @@
 
 <h4 id="handling-unauthorized-objects">Handling Unauthorized Objects</h4>
 
-<p>When any Policy method returns <code class="language-plaintext highlighter-rouge">false</code>, the unauthorized object is passed to <a href="/api-doc/2.0.2/GraphQL/Schema#unauthorized_object-class_method" target="_blank" title="API docs for GraphQL::Schema.unauthorized_object"><code>Schema.unauthorized_object</code></a>, as described in <a href="/authorization/authorization#handling-unauthorized-objects">Handling unauthorized objects</a>.</p>
+<p>When any Policy method returns <code class="language-plaintext highlighter-rouge">false</code>, the unauthorized object is passed to <a href="/api-doc/2.0.22/GraphQL/Schema#unauthorized_object-class_method" target="_blank" title="API docs for GraphQL::Schema.unauthorized_object"><code>Schema.unauthorized_object</code></a>, as described in <a href="/authorization/authorization#handling-unauthorized-objects">Handling unauthorized objects</a>.</p>
 
 <h2 id="scopes">Scopes</h2>
 
@@ -601,11 +534,11 @@
 
 <div class="language-ruby highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">module</span> <span class="nn">CustomPolicyLookup</span>
   <span class="c1"># Lookup policies in the `SystemAdmin::` namespace for system_admin users</span>
+  <span class="c1"># @return [Class]</span>
   <span class="k">def</span> <span class="nf">pundit_policy_class_for</span><span class="p">(</span><span class="n">object</span><span class="p">,</span> <span class="n">context</span><span class="p">)</span>
     <span class="n">current_user</span> <span class="o">=</span> <span class="n">context</span><span class="p">[</span><span class="ss">:current_user</span><span class="p">]</span>
     <span class="k">if</span> <span class="n">current_user</span><span class="p">.</span><span class="nf">system_admin?</span>
-      <span class="n">policy_class</span> <span class="o">=</span> <span class="no">SystemAdmin</span><span class="p">.</span><span class="nf">const_get</span><span class="p">(</span><span class="s2">"</span><span class="si">#{</span><span class="n">object</span><span class="p">.</span><span class="nf">class</span><span class="p">.</span><span class="nf">name</span><span class="si">}</span><span class="s2">Policy"</span><span class="p">)</span>
-      <span class="n">policy_class</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="n">current_user</span><span class="p">,</span> <span class="n">object</span><span class="p">)</span>
+      <span class="no">SystemAdmin</span><span class="p">.</span><span class="nf">const_get</span><span class="p">(</span><span class="s2">"</span><span class="si">#{</span><span class="n">object</span><span class="p">.</span><span class="nf">class</span><span class="p">.</span><span class="nf">name</span><span class="si">}</span><span class="s2">Policy"</span><span class="p">)</span>
     <span class="k">else</span>
       <span class="k">super</span>
     <span class="k">end</span>
