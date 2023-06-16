@@ -22,7 +22,12 @@ module GraphQL
         end
 
         module GraphQLResult
-          def initialize(result_name, parent_result, is_non_null_in_parent)
+          # FIXME: storing `represented_value` here holds onto a lot of objects, keeping them from GCing and increasing peak memory.
+          #   ... but the value is only needed for lists with skippable items.
+          #   Maybe we can set to `nil` unless we know this object is a skippable list item
+          #   (i.e. a direct child of a list with `skip_items_on_raise: true`)
+          # FIXME: likewise for `field`.
+          def initialize(result_name, parent_result, is_non_null_in_parent, represented_value, field)
             @graphql_parent = parent_result
             if parent_result && parent_result.graphql_dead
               @graphql_dead = true
@@ -31,6 +36,8 @@ module GraphQL
             @graphql_is_non_null_in_parent = is_non_null_in_parent
             # Jump through some hoops to avoid creating this duplicate storage if at all possible.
             @graphql_metadata = nil
+            @represented_value = represented_value
+            @field = field
           end
 
           def path
@@ -43,14 +50,38 @@ module GraphQL
           end
 
           attr_accessor :graphql_dead
-          attr_reader :graphql_parent, :graphql_result_name, :graphql_is_non_null_in_parent
+          attr_reader :graphql_parent, :graphql_result_name, :graphql_is_non_null_in_parent, :represented_value, :field
+
+          # True when this result is a List that was marked `skip_items_on_raise: true`.
+          # Descendants of this result will have `can_be_skipped?` be true.
+          # @return [nil, true]
+          attr_accessor :graphql_skip_list_items_that_raise
+
+          # A result can be skipped when it's an ancestor of an item in a List marked `skip_items_on_raise: true`.
+          # @return [Boolean]
+          def can_be_skipped?
+            !nearest_skippable_parent_result.nil?
+          end
+
+          # Crawls up the tree to find the first ancestor that can be skipped, that is, the first item that's a child
+          # of a List marked `skip_items_on_raise: true`.
+          # @return [GraphQLResult]
+          def nearest_skippable_parent_result
+            return @nearest_skippable_parent_result if defined?(@nearest_skippable_parent_result)
+
+            @nearest_skippable_parent_result = if graphql_parent && graphql_parent.graphql_skip_list_items_that_raise
+              self
+            else
+              graphql_parent && graphql_parent.nearest_skippable_parent_result
+            end
+          end
 
           # @return [Hash] Plain-Ruby result data (`@graphql_metadata` contains Result wrapper objects)
           attr_accessor :graphql_result_data
         end
 
         class GraphQLResultHash
-          def initialize(_result_name, _parent_result, _is_non_null_in_parent)
+          def initialize(_result_name, _parent_result, _is_non_null_in_parent, _represented_value, _field)
             super
             @graphql_result_data = {}
           end
@@ -138,7 +169,7 @@ module GraphQL
         class GraphQLResultArray
           include GraphQLResult
 
-          def initialize(_result_name, _parent_result, _is_non_null_in_parent)
+          def initialize(_result_name, _parent_result, _is_non_null_in_parent, _represented_value, _field)
             super
             @graphql_result_data = []
           end
@@ -198,7 +229,7 @@ module GraphQL
           @lazies_at_depth = lazies_at_depth
           @schema = query.schema
           @context = query.context
-          @response = GraphQLResultHash.new(nil, nil, false)
+          @response = GraphQLResultHash.new(nil, nil, false, query.root_value, nil)
           # Identify runtime directives by checking which of this schema's directives have overridden `def self.resolve`
           @runtime_directive_names = []
           noop_resolve_owner = GraphQL::Schema::Directive.singleton_class
@@ -265,7 +296,7 @@ module GraphQL
               # directly evaluated and the results can be written right into the main response hash.
               tap_or_each(gathered_selections) do |selections, is_selection_array|
                 if is_selection_array
-                  selection_response = GraphQLResultHash.new(nil, nil, false)
+                  selection_response = GraphQLResultHash.new(nil, nil, false, query.root_value, nil)
                   final_response = @response
                 else
                   selection_response = @response
@@ -547,7 +578,20 @@ module GraphQL
               err
             rescue StandardError => err
               begin
-                query.handle_or_reraise(err)
+                nearest_skippable_parent_result = selection_result.nearest_skippable_parent_result
+
+                if nearest_skippable_parent_result && (on_raise_callback = nearest_skippable_parent_result.field.on_raise_callback)
+                  begin
+                    nearest_skippable_list_item = nearest_skippable_parent_result.represented_value.object
+                    on_raise_callback.call(err, object, kwarg_arguments, context, nearest_skippable_parent_result.field, nearest_skippable_list_item)
+                  rescue GraphQL::ExecutionError => err  # TODO: DRY me
+                    err
+                  rescue StandardError => err
+                    query.handle_or_reraise(err)
+                  end
+                else
+                  query.handle_or_reraise(err)
+                end
               rescue GraphQL::ExecutionError => ex_err
                 ex_err
               end
@@ -598,6 +642,33 @@ module GraphQL
               end
             elsif is_child_result
               selection_result.set_child_result(result_name, value)
+            elsif value == GraphQL::Execution::SKIP_FROM_PARENT_LIST
+              if selection_result.graphql_skip_list_items_that_raise # This is the first list that this item can be skipped from.
+                unless selection_result.is_a?(GraphQLResultArray)
+                  raise "Invariant: unexpected result class #{selection_result.class} (#{selection_result.inspect})"
+                end
+
+                selection_result.graphql_skip_at(result_name)
+              else # Propograte up to find the first list this item can be skipped from.
+                parent = selection_result.graphql_parent
+                name_in_parent = selection_result.graphql_result_name
+
+                set_result(parent, name_in_parent, GraphQL::Execution::SKIP_FROM_PARENT_LIST, false, is_non_null_in_parent)
+                set_graphql_dead(selection_result)
+              end
+            elsif value == GraphQL::Execution::SKIP_FROM_PARENT_LIST
+              if selection_result.graphql_skip_list_items_that_raise # This is the first list that this item can be skipped from.
+                unless selection_result.is_a?(GraphQLResultArray)
+                  raise "Invariant: unexpected result class #{selection_result.class} (#{selection_result.inspect})"
+                end
+
+                selection_result.graphql_skip_at(result_name)
+              else # Propograte up to find the first list this item can be skipped from.
+                parent = selection_result.graphql_parent
+                name_in_parent = selection_result.graphql_result_name
+                set_result(parent, name_in_parent, GraphQL::Execution::SKIP_FROM_PARENT_LIST)
+                set_graphql_dead(selection_result)
+              end
             else
               selection_result.set_leaf(result_name, value)
             end
@@ -690,6 +761,12 @@ module GraphQL
                 raise "Invariant: unexpected result class #{selection_result.class} (#{selection_result.inspect})"
               end
               HALT
+            elsif GraphQL::Execution::SKIP_FROM_PARENT_LIST == value
+              unless selection_result.can_be_skipped?
+                raise "Cannot skip list items from lists not marked `skip_items_on_raise: true`"
+              end
+
+              set_result(selection_result, result_name, GraphQL::Execution::SKIP_FROM_PARENT_LIST, false, is_non_null)
             else
               # What could this actually _be_? Anyhow,
               # preserve the default behavior of doing nothing with it.
@@ -781,7 +858,7 @@ module GraphQL
             after_lazy(object_proxy, ast_node: ast_node, field: field, owner_object: owner_object, arguments: arguments, trace: false, result_name: result_name, result: selection_result) do |inner_object|
               continue_value = continue_value(inner_object, owner_type, field, is_non_null, ast_node, result_name, selection_result)
               if HALT != continue_value
-                response_hash = GraphQLResultHash.new(result_name, selection_result, is_non_null)
+                response_hash = GraphQLResultHash.new(result_name, selection_result, is_non_null, continue_value, field)
                 set_result(selection_result, result_name, response_hash, true, is_non_null)
                 gathered_selections = gather_selections(continue_value, current_type, next_selections)
                 # There are two possibilities for `gathered_selections`:
@@ -794,7 +871,7 @@ module GraphQL
                 #    (Technically, it's possible that one of those entries _doesn't_ require isolation.)
                 tap_or_each(gathered_selections) do |selections, is_selection_array|
                   if is_selection_array
-                    this_result = GraphQLResultHash.new(result_name, selection_result, is_non_null)
+                    this_result = GraphQLResultHash.new(result_name, selection_result, is_non_null, continue_value, nil)
                     final_result = response_hash
                   else
                     this_result = response_hash
@@ -831,7 +908,8 @@ module GraphQL
             # This is true for objects, unions, and interfaces
             use_dataloader_job = !inner_type.unwrap.kind.input?
             inner_type_non_null = inner_type.non_null?
-            response_list = GraphQLResultArray.new(result_name, selection_result, is_non_null)
+            response_list = GraphQLResultArray.new(result_name, selection_result, is_non_null, value, field)
+            response_list.graphql_skip_list_items_that_raise = current_type.skip_nodes_on_raise?
             set_result(selection_result, result_name, response_list, true, is_non_null)
             idx = nil
             list_value = begin

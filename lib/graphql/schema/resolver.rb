@@ -252,6 +252,9 @@ module GraphQL
           @null.nil? ? (superclass.respond_to?(:null) ? superclass.null : true) : @null
         end
 
+        # @return [Boolean]
+        attr_reader :skip_nodes_on_raise
+
         def resolver_method(new_method_name = nil)
           if new_method_name
             @resolver_method = new_method_name
@@ -266,17 +269,19 @@ module GraphQL
         # TODO unify with {#null}
         # @param new_type [Class, Array<Class>, nil] If a type definition class is provided, it will be used as the return type of the field
         # @param null [true, false] Whether or not the field may return `nil`
+        # @param null [true, false] Whether or not the field may skip list items that raise errors. Only applicable to lists.
         # @return [Class] The type which this field returns.
-        def type(new_type = nil, null: nil)
+        def type(new_type = nil, null: nil, skip_nodes_on_raise: false)
           if new_type
             if null.nil?
               raise ArgumentError, "required argument `null:` is missing"
             end
             @type_expr = new_type
             @null = null
+            @skip_nodes_on_raise = skip_nodes_on_raise
           else
             if type_expr
-              GraphQL::Schema::Member::BuildType.parse_type(type_expr, null: self.null)
+              GraphQL::Schema::Member::BuildType.parse_type(type_expr, null: self.null, skip_nodes_on_raise: self.skip_nodes_on_raise)
             elsif superclass.respond_to?(:type)
               superclass.type
             else

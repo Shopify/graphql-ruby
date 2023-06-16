@@ -18,6 +18,11 @@ module GraphQL
         true
       end
 
+      # @return [Boolean] true if this field's nodes should be skipped, if resolving them led to an error being raised.
+      def skip_nodes_on_raise?
+        @of_type.skip_nodes_on_raise?
+      end
+
       # @return [Boolean] True if this type wraps a list type
       def list?
         @of_type.list?
