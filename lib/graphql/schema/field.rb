@@ -218,8 +218,9 @@ module GraphQL
       # @param ast_node [Language::Nodes::FieldDefinition, nil] If this schema was parsed from definition, this AST node defined the field
       # @param method_conflict_warning [Boolean] If false, skip the warning if this field's method conflicts with a built-in method
       # @param validates [Array<Hash>] Configurations for validating this field
-      # @fallback_value [Object] A fallback value if the method is not defined
-      def initialize(type: nil, name: nil, owner: nil, null: nil, description: NOT_CONFIGURED, deprecation_reason: nil, method: nil, hash_key: nil, dig: nil, resolver_method: nil, connection: nil, max_page_size: NOT_CONFIGURED, default_page_size: NOT_CONFIGURED, scope: nil, introspection: false, camelize: true, trace: nil, complexity: nil, ast_node: nil, extras: EMPTY_ARRAY, extensions: EMPTY_ARRAY, connection_extension: self.class.connection_extension, resolver_class: nil, subscription_scope: nil, relay_node_field: false, relay_nodes_field: false, method_conflict_warning: true, broadcastable: NOT_CONFIGURED, arguments: EMPTY_HASH, directives: EMPTY_HASH, validates: EMPTY_ARRAY, fallback_value: NOT_CONFIGURED, &definition_block)
+      # @param fallback_value [Object] A fallback value if the method is not defined
+      # @param skip_nodes_on_raise [Boolean] true if this field's list items should be skipped, if resolving them led to an error being raised. Only applicable to List types.
+      def initialize(type: nil, name: nil, owner: nil, null: nil, description: NOT_CONFIGURED, deprecation_reason: nil, method: nil, hash_key: nil, dig: nil, resolver_method: nil, connection: nil, max_page_size: NOT_CONFIGURED, default_page_size: NOT_CONFIGURED, scope: nil, introspection: false, camelize: true, trace: nil, complexity: nil, ast_node: nil, extras: EMPTY_ARRAY, extensions: EMPTY_ARRAY, connection_extension: self.class.connection_extension, resolver_class: nil, subscription_scope: nil, relay_node_field: false, relay_nodes_field: false, method_conflict_warning: true, broadcastable: NOT_CONFIGURED, arguments: EMPTY_HASH, directives: EMPTY_HASH, validates: EMPTY_ARRAY, fallback_value: NOT_CONFIGURED, skip_nodes_on_raise: false, &definition_block)
         if name.nil?
           raise ArgumentError, "missing first `name` argument or keyword `name:`"
         end
@@ -275,6 +276,7 @@ module GraphQL
         else
           true
         end
+        @skip_nodes_on_raise = skip_nodes_on_raise
         @connection = connection
         @max_page_size = max_page_size
         @default_page_size = default_page_size
@@ -349,6 +351,11 @@ module GraphQL
 
         self.extensions.each(&:after_define_apply)
         @call_after_define = true
+
+        # TODO: should this check be centralized in `GraphQL::Schema::Member::BuildType#parse_type` instead?
+        if skip_nodes_on_raise && !self.type.list?
+          raise ArgumentError, "The `skip_nodes_on_raise` option is only applicable to lists."
+        end
       end
 
       # If true, subscription updates with this field can be shared between viewers
@@ -584,9 +591,10 @@ module GraphQL
             raise MissingReturnTypeError, "Can't determine the return type for #{self.path} (it has `resolver: #{@resolver_class}`, perhaps that class is missing a `type ...` declaration, or perhaps its type causes a cyclical loading issue)"
           end
           nullable = @return_type_null.nil? ? @resolver_class.null : @return_type_null
-          Member::BuildType.parse_type(return_type, null: nullable)
+          skip_nodes_on_raise = @skip_nodes_on_raise.nil? ? @resolver_class.skip_nodes_on_raise : @skip_nodes_on_raise
+          Member::BuildType.parse_type(return_type, null: nullable, skip_nodes_on_raise: skip_nodes_on_raise)
         else
-          @type ||= Member::BuildType.parse_type(@return_type_expr, null: @return_type_null)
+          @type ||= Member::BuildType.parse_type(@return_type_expr, null: @return_type_null, skip_nodes_on_raise: @skip_nodes_on_raise)
         end
       rescue GraphQL::Schema::InvalidDocumentError, MissingReturnTypeError => err
         # Let this propagate up

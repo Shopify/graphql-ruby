@@ -478,7 +478,7 @@ module GraphQL
             when GraphQL::Language::Nodes::NonNullType
               resolve_type_proc.call(ast_node.of_type).to_non_null_type
             when GraphQL::Language::Nodes::ListType
-              resolve_type_proc.call(ast_node.of_type).to_list_type
+              resolve_type_proc.call(ast_node.of_type).to_list_type(skip_nodes_on_raise: false)
             when String
               directives[ast_node]
             else

@@ -14,5 +14,12 @@ module GraphQL
     # Just a singleton for implementing {Query::Context#skip}
     # @api private
     SKIP = Skip.new
+
+    # @api private
+    class SkipFromParentList < GraphQL::Error; end
+
+    # Just a singleton for implementing {Query::Context#skip}
+    # @api private
+    SKIP_FROM_PARENT_LIST = SkipFromParentList.new
   end
 end

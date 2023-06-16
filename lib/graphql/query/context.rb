@@ -11,6 +11,15 @@ module GraphQL
           GraphQL::Execution::SKIP
         end
 
+        # Return this value to tell the runtime
+        # to exclude this whole object from parent list.
+        #
+        # The runtime will find the find the nearest parent list marked `skip_items_on_raise: true`,
+        # and exclude the entire list item (including this object).
+        def skip_from_parent_list
+          GraphQL::Execution::SKIP_FROM_PARENT_LIST
+        end
+
         # Add error at query-level.
         # @param error [GraphQL::ExecutionError] an execution error
         # @return [void]

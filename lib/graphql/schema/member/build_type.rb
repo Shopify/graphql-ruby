@@ -9,7 +9,7 @@ module GraphQL
         module_function
         # @param type_expr [String, Class, GraphQL::BaseType]
         # @return [GraphQL::BaseType]
-        def parse_type(type_expr, null:)
+        def parse_type(type_expr, null:, skip_nodes_on_raise: false)
           list_type = false
 
           return_type = case type_expr
@@ -85,7 +85,7 @@ module GraphQL
           # Apply list_type first, that way the
           # .to_non_null_type applies to the list type, not the inner type
           if list_type
-            return_type = return_type.to_list_type
+            return_type = return_type.to_list_type(skip_nodes_on_raise: skip_nodes_on_raise)
           end
 
           if !null

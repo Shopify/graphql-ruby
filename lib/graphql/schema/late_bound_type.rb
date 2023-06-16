@@ -21,8 +21,13 @@ module GraphQL
         @to_non_null_type ||= GraphQL::Schema::NonNull.new(self)
       end
 
-      def to_list_type
-        @to_list_type ||= GraphQL::Schema::List.new(self)
+      # can we just inherit this from graphql/schema/member/type_system_helpers.rb?
+      def to_list_type(skip_nodes_on_raise: false)
+        if skip_nodes_on_raise
+          @to_skipping_list_type ||= GraphQL::Schema::List.new(self, skip_nodes_on_raise: true)
+        else
+          @to_list_type ||= GraphQL::Schema::List.new(self)
+        end
       end
 
       def inspect

@@ -8,6 +8,11 @@ module GraphQL
     class List < GraphQL::Schema::Wrapper
       include Schema::Member::ValidatesInput
 
+      def initialize(of_type, skip_nodes_on_raise: false)
+        super(of_type)
+        @skip_nodes_on_raise = skip_nodes_on_raise
+      end
+
       # @return [GraphQL::TypeKinds::LIST]
       def kind
         GraphQL::TypeKinds::LIST
@@ -16,6 +21,10 @@ module GraphQL
       # @return [true]
       def list?
         true
+      end
+
+      def skip_nodes_on_raise?
+        @skip_nodes_on_raise
       end
 
       def to_type_signature
