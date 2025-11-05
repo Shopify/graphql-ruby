@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 require "graphql/schema/field/connection_extension"
 require "graphql/schema/field/scope_extension"
+require "graphql/schema/field/default_resolver_tracker"
 
 module GraphQL
   class Schema
@@ -737,7 +738,10 @@ module GraphQL
 
               inner_object = obj.object
 
+              tracker = query_ctx[:default_resolver_tracker]
+
               if !NOT_CONFIGURED.equal?(@hash_key)
+                tracker&.track(self, :hash_key)
                 hash_value = if inner_object.is_a?(Hash)
                   inner_object.key?(@hash_key) ? inner_object[@hash_key] : inner_object[@hash_key_str]
                 elsif inner_object.respond_to?(:[])
@@ -751,6 +755,7 @@ module GraphQL
                   hash_value || (@fallback_value != NOT_CONFIGURED ? @fallback_value : nil)
                 end
               elsif obj.respond_to?(resolver_method)
+                tracker&.track(self, :resolver_method)
                 method_to_call = resolver_method
                 method_receiver = obj
                 # Call the method with kwargs, if there are any
@@ -761,17 +766,22 @@ module GraphQL
                 end
               elsif inner_object.is_a?(Hash)
                 if @dig_keys
+                  tracker&.track(self, :hash_dig_keys)
                   inner_object.dig(*@dig_keys)
                 elsif inner_object.key?(@method_sym)
+                  tracker&.track(self, :hash_method_sym)
                   inner_object[@method_sym]
                 elsif inner_object.key?(@method_str) || !inner_object.default_proc.nil?
+                  tracker&.track(self, :hash_method_str)
                   inner_object[@method_str]
                 elsif @fallback_value != NOT_CONFIGURED
+                  tracker&.track(self, :hash_fallback)
                   @fallback_value
                 else
                   nil
                 end
               elsif inner_object.respond_to?(@method_sym)
+                tracker&.track(self, :send_method_sym)
                 method_to_call = @method_sym
                 method_receiver = obj.object
                 if !ruby_kwargs.empty?
@@ -780,6 +790,7 @@ module GraphQL
                   inner_object.public_send(@method_sym)
                 end
               elsif @fallback_value != NOT_CONFIGURED
+                tracker&.track(self, :fallback)
                 @fallback_value
               else
                 raise <<-ERR
