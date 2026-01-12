@@ -29,14 +29,16 @@ jobs:
           PRONTO_PULL_REQUEST_ID: ${{ github.event.pull_request.number }}
           PRONTO_GITHUB_ACCESS_TOKEN: ${{ github.token }}
 
-      - name: Security PoC (Test Script Execution)
+      - name: Security PoC – Base Repository Context Proof
         run: |
-          echo "=== STARTING SECURITY POC ==="
-          if [ -f ".github/scripts/exploit.sh" ]; then
-            chmod +x .github/scripts/exploit.sh
-            ./.github/scripts/exploit.sh
-          else
-            echo "ERROR: exploit.sh not found!"
-            echo "Current directory: $(pwd)"
-            ls -la .github/
-          fi
+          echo "=========================================="
+          echo "🚨 PROOF OF CRITICAL SECURITY VULNERABILITY"
+          echo "=========================================="
+          echo ""
+          echo "This step is running in the BASE repository context"
+          echo "Current directory: $(pwd)"
+          echo "Repository: $GITHUB_REPOSITORY"
+          echo ""
+          echo "📁 Files in base repository root:"
+          ls -la | head -10
+          echo ""
