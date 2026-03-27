@@ -16,6 +16,14 @@ describe GraphQL::Language::Parser do
     assert_equal expected_message, err.message
   end
 
+  it "includes extensions with PARSE_ERROR code in to_h" do
+    err = assert_raises GraphQL::ParseError do
+      subject.parse("{ ??? }")
+    end
+    err_hash = err.to_h
+    assert_equal({ "code" => "PARSE_ERROR" }, err_hash["extensions"])
+  end
+
   it "rejects newlines in single-quoted strings unless escaped" do
     nl_query_string_1 = "{ doStuff(arg: \"
     abc\") }"

@@ -18,6 +18,7 @@ module GraphQL
       {
         "message" => message,
         "locations" => locations,
+        "extensions" => { "code" => "PARSE_ERROR" },
       }
     end
   end
