@@ -1989,4 +1989,126 @@ type ReachableType implements Node {
     assert_equal "test value", result["data"]["testField"]
     assert_instance_of GraphQL::Execution::Lookahead, lookahead
   end
+  describe ".prune_ast_nodes!" do
+    let(:sdl) do
+      <<~SDL
+        schema {
+          query: Query
+        }
+        directive @tag(name: String!) repeatable on FIELD_DEFINITION
+        type Query {
+          echo(name: String!, upper: Boolean = false): String!
+        }
+        enum Status {
+          ACTIVE
+          INACTIVE @deprecated(reason: "old")
+        }
+        input EchoInput {
+          name: String!
+          upper: Boolean = false
+        }
+      SDL
+    end
+
+    def built_members(schema)
+      schema.own_definition_ast_node_members
+    end
+
+    it "removes the ast_node from every built member and the schema" do
+      schema = GraphQL::Schema.from_definition(sdl)
+      query_type = schema.types["Query"]
+      field = query_type.fields["echo"]
+      arg = field.arguments["name"]
+      enum_value = schema.types["Status"].values["INACTIVE"]
+      input_arg = schema.types["EchoInput"].arguments["upper"]
+      directive = schema.directives["tag"]
+      directive_arg = directive.arguments["name"]
+
+      # Sanity: the builder attached ast_nodes.
+      refute_nil query_type.ast_node
+      refute_nil field.ast_node
+      refute_nil arg.ast_node
+      refute_nil enum_value.ast_node
+      refute_nil input_arg.ast_node
+      refute_nil directive.ast_node
+      refute_nil directive_arg.ast_node
+      refute_nil schema.ast_node
+
+      schema.prune_ast_nodes!
+
+      assert_nil query_type.ast_node
+      assert_nil field.ast_node
+      assert_nil arg.ast_node
+      assert_nil enum_value.ast_node
+      assert_nil input_arg.ast_node
+      assert_nil directive.ast_node
+      assert_nil directive_arg.ast_node
+      assert_nil schema.ast_node
+    end
+
+    it "returns the schema and is idempotent" do
+      schema = GraphQL::Schema.from_definition(sdl)
+      assert_same schema, schema.prune_ast_nodes!
+      assert_same schema, schema.prune_ast_nodes! # second call is a no-op
+    end
+
+    it "does not change the printed schema" do
+      reference = GraphQL::Schema.from_definition(sdl).to_definition
+      schema = GraphQL::Schema.from_definition(sdl)
+      schema.prune_ast_nodes!
+      assert_equal reference, schema.to_definition
+    end
+
+    it "still executes queries after pruning" do
+      resolver = {
+        "Query" => {
+          "echo" => ->(object, args, context) { args[:name] }
+        }
+      }
+      schema = GraphQL::Schema.from_definition(sdl, default_resolve: resolver)
+      schema.prune_ast_nodes!
+      result = schema.execute("{ echo(name: \"hi\") }")
+      assert_equal "hi", result["data"]["echo"]
+    end
+
+    it "prunes at build time with retain_ast_nodes: false" do
+      schema = GraphQL::Schema.from_definition(sdl, retain_ast_nodes: false)
+      assert_nil schema.types["Query"].ast_node
+      assert_nil schema.types["Query"].fields["echo"].ast_node
+      assert_nil schema.types["Status"].values["INACTIVE"].ast_node
+      assert_nil schema.directives["tag"].ast_node
+      assert_nil schema.ast_node
+    end
+
+    it "retains ast_nodes by default" do
+      schema = GraphQL::Schema.from_definition(sdl)
+      refute_nil schema.types["Query"].ast_node
+      refute_nil schema.types["Query"].fields["echo"].ast_node
+    end
+
+    it "is a no-op on a schema not built from definition" do
+      klass = Class.new(GraphQL::Schema) do
+        query(Class.new(GraphQL::Schema::Object) do
+          graphql_name("Query")
+          field :id, "ID!", null: false
+        end)
+      end
+      assert_nil built_members(klass)
+      assert_same klass, klass.prune_ast_nodes!
+    end
+
+    it "skips frozen members without raising" do
+      schema = GraphQL::Schema.from_definition(sdl)
+      # Freeze a built member; prune must leave it alone rather than raise FrozenError.
+      enum_value = schema.types["Status"].values["ACTIVE"]
+      enum_value.freeze
+      refute_nil enum_value.ast_node
+
+      schema.prune_ast_nodes! # must not raise FrozenError on the frozen member
+      # The frozen member keeps its ast_node; the rest are pruned.
+      refute_nil enum_value.ast_node
+      assert_nil schema.types["Query"].ast_node
+    end
+  end
+
 end

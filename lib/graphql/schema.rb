@@ -111,8 +111,9 @@ module GraphQL
       # @param default_resolve [<#call(type, field, obj, args, ctx)>] A callable for handling field resolution
       # @param parser [Object] An object for handling definition string parsing (must respond to `parse`)
       # @param using [Hash] Plugins to attach to the created schema with `use(key, value)`
+      # @param retain_ast_nodes [Boolean] If `false`, drop the `ast_node` back-references from every built member after the build (see {prune_ast_nodes!}).
       # @return [Class] the schema described by `document`
-      def from_definition(definition_or_path, default_resolve: nil, parser: GraphQL.default_parser, using: {}, base_types: {})
+      def from_definition(definition_or_path, default_resolve: nil, parser: GraphQL.default_parser, using: {}, base_types: {}, retain_ast_nodes: true)
         # If the file ends in `.graphql` or `.graphqls`, treat it like a filepath
         if definition_or_path.end_with?(".graphql") || definition_or_path.end_with?(".graphqls")
           GraphQL::Schema::BuildFromDefinition.from_definition_path(
@@ -122,6 +123,7 @@ module GraphQL
             parser: parser,
             using: using,
             base_types: base_types,
+            retain_ast_nodes: retain_ast_nodes,
           )
         else
           GraphQL::Schema::BuildFromDefinition.from_definition(
@@ -131,8 +133,57 @@ module GraphQL
             parser: parser,
             using: using,
             base_types: base_types,
+            retain_ast_nodes: retain_ast_nodes,
           )
         end
+      end
+
+      # The schema members (types, fields, arguments, enum values, directives)
+      # that {from_definition} attached an `ast_node` to, or `nil` for a schema
+      # not built from SDL. Used by {prune_ast_nodes!}.
+      def own_definition_ast_node_members
+        defined?(@own_definition_ast_node_members) ? @own_definition_ast_node_members : nil
+      end
+
+      def own_definition_ast_node_members=(members)
+        @own_definition_ast_node_members = members
+      end
+
+      # Remove the `ast_node` back-references that {from_definition} attached to
+      # each built type, field, argument, enum value, directive, and to the
+      # schema itself.
+      #
+      # Every retained AST node holds the parsed {Language::Nodes::Document} alive
+      # (children retain their parent), so a single schema built from SDL pins
+      # the whole parse tree in memory. Nothing in graphql-ruby reads a schema
+      # member's `ast_node` after the build: directives, descriptions, comments,
+      # deprecation reasons, and argument defaults are all materialized onto the
+      # members at build time, and {Schema#to_definition} prints identically
+      # without the ivars.
+      #
+      # The trade-off is the loss of source positions (`ast_node.line`/`col`),
+      # which is why this stays opt-in. Call it on schemas you never introspect
+      # at the SDL level:
+      #
+      #   schema = GraphQL::Schema.from_definition(File.read(path))
+      #   schema.prune_ast_nodes!
+      #
+      # It skips frozen members (so it is safe to call after {RactorShareable},
+      # which does nothing in that case), is idempotent, and returns the schema.
+      #
+      # @see from_definition `retain_ast_nodes:` to prune at build time.
+      # @return [self]
+      def prune_ast_nodes!
+        if (members = own_definition_ast_node_members)
+          members.each do |member|
+            if !member.frozen? &&
+                member.instance_variable_defined?(:@ast_node) &&
+                !member.instance_variable_get(:@ast_node).nil?
+              member.remove_instance_variable(:@ast_node)
+            end
+          end
+        end
+        self
       end
 
       def deprecated_graphql_definition
